@@ -1,6 +1,6 @@
 --[[
 rotfsev: FSUIPC event-based fast/slow event generator for rotary switches
-Version 20210528-0-43815e1
+Version 20210616-0-1f8f8c0
 
 The MIT License (MIT)
 Copyright © 2021 Blake Buhlig
@@ -119,15 +119,15 @@ end
 
 init({
   -- 1st actual rotary button to manage
-  {Joystick='B',Button=12,
+  {Joystick='B',Button=12, -- inc direction of the inc/dec
    -- trigger event upon button press?
    PressEvent=true,
    -- trigger event upon button release?
    ReleaseEvent=false,
    -- virtual button to generate when turning slowly
-   Slow=VirtualButton(64,0),
+   Slow=VirtualButton(70,2),
    -- virtual button to generate when turning fast
-   Fast=VirtualButton(64,1),
+   Fast=VirtualButton(70,3),
    -- generate fast vBtn when a new event happens within this threshold of the
    -- last event...
    FastThresh_ms=100,
@@ -136,29 +136,29 @@ init({
    FastThreshFilter_cnt=0},
 
   -- 2nd actual rotary button to manage
-  {Joystick='B',Button=13,
+  {Joystick='B',Button=13, -- dec direction of the inc/dec
    PressEvent=true,
    ReleaseEvent=false,
-   Slow=VirtualButton(64,2),
-   Fast=VirtualButton(64,3),
+   Slow=VirtualButton(70,1),
+   Fast=VirtualButton(70,0),
    FastThresh_ms=100,
    FastThreshFilter_cnt=0},
 
   -- 3rd actual rotary button to manage
-  {Joystick='B',Button=21,
+  {Joystick='B',Button=21, -- fwd (trim down) on the trim wheel
    PressEvent=true,
    ReleaseEvent=false,
-   Slow=VirtualButton(64,4),
-   Fast=VirtualButton(64,5),
+   Slow=VirtualButton(68,1),
+   Fast=VirtualButton(68,0),
    FastThresh_ms=100,
    FastThreshFilter_cnt=0},
 
   -- 4th actual rotary button to manage
-  {Joystick='B',Button=22,
+  {Joystick='B',Button=22, -- rev (trim up) on the trim wheel
    PressEvent=true,
    ReleaseEvent=false,
-   Slow=VirtualButton(64,6),
-   Fast=VirtualButton(64,7),
+   Slow=VirtualButton(68,2),
+   Fast=VirtualButton(68,3),
    FastThresh_ms=100,
    FastThreshFilter_cnt=0}
 })

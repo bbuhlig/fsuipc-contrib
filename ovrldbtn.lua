@@ -1,6 +1,6 @@
 --[[
 ovrldbtn - event-based manager of an overloaded button for FSUIPC
-Version 20210601-0-abcc98e
+Version 20210616-0-27a8a7f
 
 The MIT License (MIT)
 Copyright © 2021 Blake Buhlig
@@ -187,7 +187,7 @@ function VirtualButton(joy,btn)
    end
 end
 
-vbtn_base_clicks = VirtualButton(65,0)
+vbtn_base_clicks = VirtualButton(65,1)
 
 --[[
 btn_hold_threshold_ms: If after a button click, a button release is not
@@ -220,7 +220,7 @@ single-click-and-hold, 66,2 will be set on every double-click-and-hold, 66,3
 will be set on every triple-click-and-hold, 66,4 will be set every
 4x-click-and-hold...  through vbtn_base_clkNhold + n_clicks_max.
 --]]
-vbtn_base_clkNhold = VirtualButton(66,0)
+vbtn_base_clkNhold = VirtualButton(66,1)
 
 --
 -- IMPLEMENTATION
