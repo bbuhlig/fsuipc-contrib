@@ -1,6 +1,6 @@
 --[[
 bravoleds - FSUIPC event-based manager of Honeycomb Bravo LEDs
-Version 20210616-1-0f791d2
+Version 20210619-0-8ea211c
 
 The MIT License (MIT)
 Copyright © 2021 Blake Buhlig
@@ -153,30 +153,105 @@ _start()
 
 
 --------- Event responses below
+SimVar = {
+  _ReadFuncs = {UB=ipc.readUB,UW=ipc.readUW,UD=ipc.readUD},
+  _WriteFuncs = {UB=ipc.writeUB,UW=ipc.writeUW,UD=ipc.writeUD}
+}
 
-OFFSET_AUTOPILOT_MASTER=0x07BC
-OFFSET_AUTOPILOT_NAV1_LOCK=0x07C4
-OFFSET_AUTOPILOT_HEADING_LOCK=0x07C8
-OFFSET_AUTOPILOT_ALTITUDE_HOLD=0x07D8
-OFFSET_AUTOPILOT_AIRSPEED_HOLD=0x07DC
-OFFSET_AUTOPILOT_MACH_HOLD=0x07E4
-OFFSET_AUTOPILOT_VERTICAL_HOLD=0x07EC
-OFFSET_AUTOPILOT_RPM_HOLD=0x07F4
-OFFSET_AUTOPILOT_GLIDESLOPE_HOLD=0x07FC
-OFFSET_AUTOPILOT_APPROACH_HOLD=0x0800
-OFFSET_AUTOPILOT_BACKCOURSE_HOLD=0x0804
+SimVar.__index = SimVar
+SimVar._OffsetDict = {}
 
-OFFSET_IS_GEAR_RETRACTABLE=0x060C
-OFFSET_GEAR_HANDLE_POSITION=0x0BE8
-OFFSET_GEAR_CENTER_POSITION=0x0BEC
-OFFSET_GEAR_RIGHT_POSITION=0x0BF0
-OFFSET_GEAR_LEFT_POSITION=0x0BF4
+function SimVar.new(offset,typecode,autoupdate,update_cb)
+  local self = setmetatable({}, SimVar)
+  self._offset = offset
+  self._typecode = typecode
+  self.value = nil
 
-OFFSET_BRAKE_PARKING_POSITION=0x0BC8
-OFFSET_SIM_ON_GROUND=0x0366
+  if (autoupdate) then
+     SimVar._OffsetDict[self._offset] = self
+     self._update_cb = update_cb
+     event.offset(self._offset,self._typecode,"SimVar._OffsetEvent")
+  end
 
-OFFSET_GENERAL_ENG_ANTI_ICE_POSITION_1=0x08B2
-OFFSET_GENERAL_ENG_ANTI_ICE_POSITION_2=0x094A
+  return self
+end
+
+function SimVar.readOffset(self)
+  readfunc = SimVar._ReadFuncs[self._typecode]
+  self.value = readfunc(self._offset)
+  return self.value
+end
+
+function SimVar.get(self)
+  if self.value == nil then
+    self:readOffset()
+  end
+  return self.value
+end
+
+function SimVar.isTrue(self)
+  return self:get() ~= 0
+end
+
+function SimVar.set(self,value)
+  writefunc = SimVar._WriteFuncs[self._typecode]
+  self.value = value
+  return writefunc(self._offset,value)
+end
+
+
+function SimVar._OffsetEvent(offset,value)
+  obj=SimVar._OffsetDict[offset]
+  if obj ~= nil then
+     obj.value=value
+     if obj._update_cb ~= nil then
+        obj:_update_cb()
+     end
+  end 
+end
+
+
+SimVar.new(0x07BC,"UD",true,function(self) set_led(AUTO_PILOT,self:isTrue()) end) -- AUTOPILOT MASTER
+SimVar.new(0x07C4,"UD",true,function(self) set_led(NAV,self:isTrue()) end) -- AUTOPILOT NAV1 LOCK
+SimVar.new(0x07C8,"UD",true,function(self) set_led(HDG,self:isTrue()) end) -- AUTOPILOT HEADING LOCK
+SimVar.new(0x07D8,"UD",true,function(self) set_led(ALT,self:isTrue()) end) -- AUTOPILOT ALTITUDE HOLD
+SimVar.new(0x07DC,"UD",true,function(self) set_led(IAS,self:isTrue()) end) -- AUTOPILOT AIRPSEED HOLD
+SimVar.new(0x07E4,"UD",true,function(self) set_led(IAS,self:isTrue()) end) -- AUTOPILOT MACH HOLD
+SimVar.new(0x07F4,"UD",true,function(self) set_led(IAS,self:isTrue(),true) end) -- AUTOPILOT RPM HOLD
+SimVar.new(0x07EC,"UD",true,function(self) set_led(VS,self:isTrue()) end) -- AUTOPILOT VERTICAL HOLD
+SimVar.new(0x07FC,"UD",true,function(self) set_led(APR,self:isTrue(),true) end) -- AUTOPILOT GLIDESLOPE HOLD
+SimVar.new(0x0800,"UD",true,function(self) set_led(APR,self:isTrue()) end) -- AUTOPILOT APPROACH HOLD
+SimVar.new(0x0804,"UD",true,function(self) set_led(REV,self:isTrue()) end) -- AUTOPILOT BACKCOURSE HOLD
+
+GearIsRetractable = SimVar.new(0x060C,"UB",true)
+ParkingBrakeIsSet = SimVar.new(0x0BC8,"UW",true,function(self)
+  set_led(PARKING_BRAKE,ParkingBrakeIsSet:isTrue(),not SimIsOnGround)
+  MCFCondition(MCF_ParkingBrakeSetInAir,(ParkingBrakeIsSet:isTrue() and not SimIsOnGround:isTrue()))
+  upd_master_caution_warning()
+end)
+SimIsOnGround = SimVar.new(0x0366,"UW",true,function(self)
+  manage_all_gear_leds(LeftGearIsDown,CenterGearIsDown,RightGearIsDown,GearHandleIsDown,SimIsOnGround)
+  set_led(PARKING_BRAKE,ParkingBrakeIsSet:isTrue(),not SimIsOnGround:isTrue())
+  MCFCondition(MCF_ParkingBrakeSetInAir,(ParkingBrakeIsSet:isTrue() and not SimIsOnGround:isTrue()))
+  upd_master_caution_warning()
+end)
+GearHandleIsDown = SimVar.new(0x0BE8,"UD",true,function(self)
+  manage_all_gear_leds(LeftGearIsDown,CenterGearIsDown,RightGearIsDown,GearHandleIsDown,SimIsOnGround)
+  MCFCondition(MCF_GearInTransOnGround, (SimIsOnGround:isTrue() and not GearHandleIsDown:isTrue() and GearIsRetractable:isTrue()))
+  upd_master_caution_warning()
+end)
+CenterGearIsDown = SimVar.new(0x0BEC,"UD",true,function(self)
+  manage_gear_led(GEAR_CNTR,CenterGearIsDown,GearHandleIsDown,SimIsOnGround)
+  upd_master_caution_warning()
+end)
+RightGearIsDown = SimVar.new(0x0BF0,"UD",true,function(self)
+  manage_gear_led(GEAR_RIGHT,RightGearIsDown,GearHandleIsDown,SimIsOnGround)
+  upd_master_caution_warning()
+end)
+LeftGearIsDown = SimVar.new(0x0BF4,"UD",true,function(self)
+  manage_gear_led(GEAR_LEFT,LeftGearIsDown,GearHandleIsDown,SimIsOnGround)
+  upd_master_caution_warning()
+end)
 
 
 MCF_GearInTransOnGround=0x00000001
@@ -206,14 +281,6 @@ MasterCautionAck=false
 MasterWarningFlags=0
 MasterWarningAck=false
 
-ParkingBrakeIsSet=true;
-SimIsOnGround=true;
-GearIsRetractable=false;
-GearHandleIsDown=true;
-LeftGearIsDown=true;
-RightGearIsDown=true;
-CenterGearIsDown=true;
-
 SetBits = logic.Or
 function ClearBits(flags,bits)
    return logic.And(flags,logic.Not(bits))
@@ -232,14 +299,14 @@ end
 function MWFCondition(bits,condition) if condition then MWFSet(bits) else MWFClear(bits) end end
 
 function manage_gear_led(gear_id,gear_is_down,control_is_down,sim_is_on_ground,gear_is_failed)
-   if (GearIsRetractable) then
+   if (GearIsRetractable:isTrue()) then
       if (gear_is_failed) then
-         set_gear_led(gear_id,GEARIND_RED,(not (gear_is_down and control_is_down)))
+         set_gear_led(gear_id,GEARIND_RED,(not (gear_is_down:isTrue() and control_is_down:isTrue())))
       else
-         if ((not gear_is_down) and (not control_is_down)) then
+         if ((not gear_is_down:isTrue()) and (not control_is_down:isTrue())) then
             set_gear_led(gear_id,GEARIND_OFF)
          else
-            set_gear_led(gear_id,GEARIND_GREEN,(gear_is_down ~= control_is_down))
+            set_gear_led(gear_id,GEARIND_GREEN,(gear_is_down:isTrue() ~= control_is_down:isTrue()))
          end
       end
    else
@@ -255,65 +322,10 @@ function manage_all_gear_leds(l_dn,c_dn,r_dn,ctrl_dn,on_gnd,l_fail,c_fail,r_fail
   manage_gear_led(GEAR_RIGHT,r_dn,ctrl_dn,on_gnd,r_fail)
 end
 
-function offset_event(offset,value)
-   if (offset == OFFSET_AUTOPILOT_MASTER) then set_led(AUTO_PILOT,(value~=0))
-   elseif (offset == OFFSET_AUTOPILOT_HEADING_LOCK) then set_led(HDG,(value~=0))
-   elseif (offset == OFFSET_AUTOPILOT_NAV1_LOCK) then set_led(NAV,(value~=0))
-   elseif (offset == OFFSET_AUTOPILOT_APPROACH_HOLD) then set_led(APR,(value~=0))
-   elseif (offset == OFFSET_AUTOPILOT_GLIDESLOPE_HOLD) then set_led(APR,(value~=0),true)
-   elseif (offset == OFFSET_AUTOPILOT_BACKCOURSE_HOLD) then set_led(REV,(value~=0))
-   elseif (offset == OFFSET_AUTOPILOT_ALTITUDE_HOLD) then set_led(ALT,(value~=0))
-   elseif (offset == OFFSET_AUTOPILOT_VERTICAL_HOLD) then set_led(VS,(value~=0))
-   elseif (offset == OFFSET_AUTOPILOT_AIRSPEED_HOLD) or (offset == OFFSET_AUTOPILOT_MACH_HOLD) then
-      set_led(IAS,(value~=0))
-   elseif (offset == OFFSET_AUTOPILOT_RPM_HOLD) then set_led(IAS,(value~=0),true)
-   elseif (offset == OFFSET_IS_GEAR_RETRACTABLE) then GearIsRetractable=(value~=0)
-   elseif (offset == OFFSET_GEAR_HANDLE_POSITION) then
-      GearHandleIsDown=(value~=0)
-      manage_all_gear_leds(LeftGearIsDown,CenterGearIsDown,RightGearIsDown,GearHandleIsDown,SimIsOnGround)
-      MCFCondition(MCF_GearInTransOnGround, (SimIsOnGround and not GearHandleIsDown and GearIsRetractable))
-   elseif (offset == OFFSET_GEAR_CENTER_POSITION) then
-      CenterGearIsDown=(value~=0)
-      manage_gear_led(GEAR_CNTR,CenterGearIsDown,GearHandleIsDown,SimIsOnGround)
-   elseif (offset == OFFSET_GEAR_RIGHT_POSITION) then
-      RightGearIsDown=(value~=0)
-      manage_gear_led(GEAR_RIGHT,RightGearIsDown,GearHandleIsDown,SimIsOnGround)
-   elseif (offset == OFFSET_GEAR_LEFT_POSITION) then
-      LeftGearIsDown=(value~=0)
-      manage_gear_led(GEAR_LEFT,LeftGearIsDown,GearHandleIsDown,SimIsOnGround)
-   elseif (offset == OFFSET_BRAKE_PARKING_POSITION) then
-      ParkingBrakeIsSet=(value~=0)
-      set_led(PARKING_BRAKE,ParkingBrakeIsSet,not SimIsOnGround)
-      MCFCondition(MCF_ParkingBrakeSetInAir,(ParkingBrakeIsSet and not SimIsOnGround))
-   elseif (offset == OFFSET_SIM_ON_GROUND) then
-      SimIsOnGround=(value~=0)
-      manage_all_gear_leds(LeftGearIsDown,CenterGearIsDown,RightGearIsDown,GearHandleIsDown,SimIsOnGround)
-      set_led(PARKING_BRAKE,ParkingBrakeIsSet,not SimIsOnGround)
-      MCFCondition(MCF_ParkingBrakeSetInAir,(ParkingBrakeIsSet and not SimIsOnGround))
-   end
-
-   -- manage master caution and master warning
-   MCFCondition(MCF_GearStateDiff, ((LeftGearIsDown ~= RightGearIsDown) or (LeftGearIsDown ~= CenterGearIsDown)))
+function upd_master_caution_warning()
+   MCFCondition(MCF_GearStateDiff, ((LeftGearIsDown:isTrue() ~= RightGearIsDown:isTrue()) or (LeftGearIsDown:isTrue() ~= CenterGearIsDown:isTrue())))
 
    set_led(MASTER_CAUTION,(MasterCautionFlags~=0),(not MasterCautionAck))
    set_led(MASTER_WARNING,(MasterWarningFlags~=0),(not MasterWarningAck))
 end
 
-event.offset(OFFSET_SIM_ON_GROUND,"UW","offset_event")
-
-event.offset(OFFSET_AUTOPILOT_MASTER,"UD","offset_event")
-event.offset(OFFSET_AUTOPILOT_HEADING_LOCK,"UD","offset_event")
-event.offset(OFFSET_AUTOPILOT_NAV1_LOCK,"UD","offset_event")
-event.offset(OFFSET_AUTOPILOT_APPROACH_HOLD,"UD","offset_event")
-event.offset(OFFSET_AUTOPILOT_GLIDESLOPE_HOLD,"UD","offset_event")
-event.offset(OFFSET_AUTOPILOT_BACKCOURSE_HOLD,"UD","offset_event")
-event.offset(OFFSET_AUTOPILOT_ALTITUDE_HOLD,"UD","offset_event")
-event.offset(OFFSET_AUTOPILOT_VERTICAL_HOLD,"UD","offset_event")
-event.offset(OFFSET_AUTOPILOT_AIRSPEED_HOLD,"UD","offset_event")
-event.offset(OFFSET_AUTOPILOT_MACH_HOLD,"UD","offset_event")
-event.offset(OFFSET_AUTOPILOT_RPM_HOLD,"UD","offset_event")
-event.offset(OFFSET_GEAR_HANDLE_POSITION,"UD","offset_event")
-event.offset(OFFSET_GEAR_CENTER_POSITION,"UD","offset_event")
-event.offset(OFFSET_GEAR_RIGHT_POSITION,"UD","offset_event")
-event.offset(OFFSET_GEAR_LEFT_POSITION,"UD","offset_event")
-event.offset(OFFSET_BRAKE_PARKING_POSITION,"UW","offset_event")
