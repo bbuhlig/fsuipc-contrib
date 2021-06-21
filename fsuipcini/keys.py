@@ -1,6 +1,6 @@
 """
 keys.py -- Keys helper
-Version 20210616-0-bbad1b2
+Version 20210620-0-af67042
 
 The MIT License (MIT)
 Copyright © 2021 Blake Buhlig
@@ -37,7 +37,7 @@ from enum import Enum
 import functools
 
 # Virtual Keycodes
-class VK(Control,Enum):
+class VK(Enum):
    # Adapted from https://docs.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes
    LBUTTON = 0x01 # Left mouse button
    RBUTTON = 0x02 # Right mouse button
@@ -232,9 +232,6 @@ class VK(Control,Enum):
    PA1 = 0xFD # PA1 key
    OEM_CLEAR = 0xFE # Clear key
 
-VK._FullNameData = dict() #TODO
-VK._CtrlIdPrefix = 'K'
-
 #Virtual Key Code Modifiers
 class VKM(Enum):
    SHIFT = 0x01 #Shift
@@ -245,15 +242,30 @@ class VKM(Enum):
    WIN = 0x20 # Windows key (left or right)
    MENU = 0x40 # Menu key (the application key, to the right of the right Windows key)
 
-def key(k,*argv):
+class KeyControl(Control):
+   _CtrlIdPrefix = 'K'
 
-   shift_modifiers = [ VKM.NONE ]
-   shift_modifiers.extend(argv)
+   def __init__(self,vkcode,*argv):
+      shift_modifiers = [ VKM.NONE ]
+      shift_modifiers.extend(argv)
+      self._vkcode = vkcode
+      self._shiftcode = functools.reduce(lambda x,y: val(x) | val(y),
+                                         shift_modifiers)
 
-   shift_code = functools.reduce(lambda x,y: val(x) | val(y), shift_modifiers)
-   return (k,shift_code)
+   @property
+   def ctrlcode(self):
+      return f'{self.__class__._CtrlIdPrefix}{val(self._vkcode)}'
+
+   @property
+   def ctrlparam(self):
+      return val(self._shiftcode)
+
+   @property
+   def FsuipcCtrlCode(self):
+      while not hasattr(self,'_vkcode'):
+         self = self.value
+      return val(self._vkcode) + 256*val(self._shiftcode)
 
 def encode_key(thekey):
    keycode, shift_code = thekey
-   return val(keycode) + 256*shift_code
 

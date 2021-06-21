@@ -1,6 +1,6 @@
 """
 buttons.py -- Button helpers
-Version 20210616-0-322e9bd
+Version 20210620-0-f6d579c
 
 The MIT License (MIT)
 Copyright © 2021 Blake Buhlig
@@ -35,14 +35,8 @@ from enum import Enum
 from .utils import val, gen_trace_str
 from . import _globals
 from .offsets import OffsetCondition
+from . import controls
 
-def encode_btn(joynum,btnnum):
-   return 256*joynum+btnnum
-
-def decode_btn(btn):
-   joynum=int(val(btn)/256)
-   btnnum=val(btn) % 256
-   return (joynum, btnnum)
 
 class ButtonAction(Enum):
    REPEAT  = 'R'
@@ -93,6 +87,43 @@ class ButtonEnum(Enum):
       return ButtonCondition(self.JoystickCode,val(self),
                              ButtonCondition.Test.FLAG_SET,False)
 
+   # Use this property to get the button's encoding for the params
+   # for Toggle_button_flag, Set_button_flag and Clear_button_flag
+   # APIs exposed by FSUIPC (ref Advanced Users Guide p.26)
+   @property
+   def ButtonFlagAPIParamCode(self):
+      if not isinstance(self.JoystickCode,int):
+         raise ValueError(f'button JoystickCode is {self.JoystickCode}, but ButtonFlagAPIParamCode only supports JoyNumbers. You probably need to use Lua for this.')
+
+      return 256*self.JoystickCode+val(self)
+
+   def _virt_btn_ctrl(self):
+      if self.JoystickCode < 64 or self.JoystickCode > 72:
+         raise RuntimeError(f"Bad JoystickCode {self.JoystickCode}, must be 64-72")
+
+      btncode=val(self)
+      if btncode < 0 or self.JoystickCode > 31:
+         raise RuntimeError(f"Bad button code {btncode}, must be 0-31")
+
+      return OffsetCtrl(offset=0x3340+((self.JoystickCode-64) *4),
+                        size=OffsetSize.Int32, llimit=0, ulimit=31)
+
+   # Use this property to get the offset control for pressing the virtual button
+   @property
+   def VirtPress(self):
+      return self._virt_btn_ctrl.op(OffsetCtrl.Operation.Setbits,1 << val(self))
+
+   # Use this property to get the offset control for releasing the virtual button
+   @property
+   def VirtRelease(self):
+      return self._virt_btn_ctrl.op(OffsetCtrl.Operation.Clearbits,1 << val(self))
+
+   # Use this property to get the offset control for toggling the virtual button
+   @property
+   def VirtToggle(self):
+      return self._virt_btn_ctrl.op(OffsetCtrl.Operation.Togglebits,1 << val(self))
+
+
 def btnmap(button,control,conds=[],action=ButtonAction.PRESS):
 
    if action == ButtonAction.PRESS_AND_RELEASE:
@@ -102,7 +133,12 @@ def btnmap(button,control,conds=[],action=ButtonAction.PRESS):
 
    param = 0
 
-   if isinstance(control,tuple):
+   while not hasattr(control,'ctrlcode') and not isinstance(control,tuple):
+      control = val(control)
+
+   if hasattr(control,'ctrlparam'):
+      param = control.ctrlparam
+   elif isinstance(control,tuple):
       control, param = control
 
    for action in act:
@@ -128,17 +164,15 @@ def btnmap(button,control,conds=[],action=ButtonAction.PRESS):
       if len(offset_conditions) > 0:
          s = f"{' '.join(map(str,offset_conditions))} {s}"
 
-      s = s + f'{val(button.joycode)},{control.ctrlcode},{val(param)}'
+      if hasattr(control,'ctrlcode'):
+         ctrlcode=control.ctrlcode
+      else:
+         ctrlcode=control
+
+
+      s = s + f'{val(button.joycode)},{ctrlcode},{val(param)}'
 
       _globals.Section_idx += 1
 
       print(f'{_globals.Section_idx}={s} ;{gen_trace_str()}')
-
-def encode_btn(joynum,btnnum):
-   return 256*joynum+btnnum
-
-def decode_btn(btn):
-   joynum=int(val(btn)/256)
-   btnnum=val(btn) % 256
-   return (joynum, btnnum)
 

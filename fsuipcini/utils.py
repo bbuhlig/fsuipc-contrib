@@ -1,6 +1,6 @@
 """
 utils.py -- General module utlities
-Version 20210616-0-98035cd
+Version 20210620-0-2aba7e9
 
 The MIT License (MIT)
 Copyright © 2021 Blake Buhlig
@@ -59,12 +59,10 @@ def end_section():
    _init_section()
 
 def val(x):
-   if hasattr(x,'value'):
-      return x.value
-   elif hasattr(x,'_value_'):
-      return x._value_
-   else:
-      return x
+   v = x
+   while hasattr(v,'value') or hasattr(v,'_value_'):
+      v = v.value if hasattr(v,'value') else v._value_
+   return v
 
 def filter_ini(fn,*argv):
    with open(fn,'r') as ini_ifh:

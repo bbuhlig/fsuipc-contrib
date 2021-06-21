@@ -1,6 +1,6 @@
 """
 offsets.py -- Offsets helper
-Version 20210616-0-0a8f870
+Version 20210620-0-c2a0a98
 
 The MIT License (MIT)
 Copyright © 2021 Blake Buhlig
@@ -75,7 +75,7 @@ class OffsetCondition:
       return retval
 
 
-class OffsetCtrl(Control):
+class OffsetControl(Control):
    _CtrlIdPrefix = 'C'
 
    _BITSHIFT_OPERATION = 26
@@ -93,9 +93,6 @@ class OffsetCtrl(Control):
       FloatSet          = 28
       FloatInc          = 30
 
-   @property
-   def operation_is_decrement(self):
-      return (val(self._operation) & val(self.__class__.Operation.DecrementUnsigned) != 0)
 
    _BITSHIFT_SIZE = 24
 
@@ -115,10 +112,22 @@ class OffsetCtrl(Control):
 
    def op(self,operation,operand):
       self._operation = operation
-      limit = val(self._llimit if self.operation_is_decrement else self._ulimit)
-      param = ((limit << 16) | operand) & 0xFFFFFFFF
+      opval = val(operation)
 
-      return (self, f'x{param:08X}')
+      if opval >= self.__class__.Operation.IncrementUnsigned.value or \
+         opval <= self.__class__.Operation.DecrementCyclic.value:
+
+         # Of the 6 inc/dec operations on integers, the 3 that
+         # are increments have the 0x4 bit set in their encoding
+         # whereas the other 3 that are decrements do not
+
+         limit = self._llimit if (opval & 0x4 == 0) else self._ulimit
+
+         param = f'x{limit&((1<<16)-1):04X}{operand&((1<<16)-1):04X}'
+      else:
+         param = f'x{operand&((1<<32)-1):08X}'
+
+      return (f'C{self.value}', param)
 
 
 
@@ -133,19 +142,26 @@ class OffsetValEnum(Enum):
          if self.__class__.ulimit < value:
             self.__class__.ulimit = value
 
-         self.__class__.Ctrl = OffsetCtrl(offset = self.__class__.Offset.value,
-                                          size   = self.__class__.Size.value,
-                                          llimit = self.__class__.llimit,
-                                          ulimit = self.__class__.ulimit)
+         self.__class__.Ctrl = OffsetControl(offset = self.__class__.Offset.value,
+                                             size   = self.__class__.Size.value,
+                                             llimit = self.__class__.llimit,
+                                             ulimit = self.__class__.ulimit)
 
       elif hasattr(self.__class__,'Offset') and hasattr(self.__class__,'Size'):
          self.__class__.llimit = value
          self.__class__.ulimit = value
 
    @property
-   def equal_condition(self):
+   def CondEqual(self):
 
       return OffsetCondition(size = self.__class__.Size.value,
                              offset = self.__class__.Offset.value,
                              condvalue = val(self))
 
+   @property
+   def CondNotEqual(self):
+
+      return OffsetCondition(size = self.__class__.Size.value,
+                             offset = self.__class__.Offset.value,
+                             condvalue = val(self),
+                             test = OffsetCondition.Test.NOT_EQUAL)

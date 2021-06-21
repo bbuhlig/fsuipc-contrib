@@ -1,6 +1,6 @@
 --[[
 ovrldbtn - event-based manager of an overloaded button for FSUIPC
-Version 20210616-0-27a8a7f
+Version 20210620-0-4b40cac
 
 The MIT License (MIT)
 Copyright © 2021 Blake Buhlig
@@ -182,9 +182,12 @@ toggled on every triple-click, and 64,11 will be toggled every 4-click ...
 through vbtn_base_clicks + n_clicks_max.
 --]]
 function VirtualButton(joy,btn)
-   if (joy >= 64) and (btn >= 0) and (btn < 16) then
-      return ((joy-64)*16)+btn
-   end
+  if joy < 64 or joy > 72 then
+    error("Bad joy code, must be 64-72, was " + joy)
+  elseif btn < 0 or btn > 31 then
+    error("Bad btn code, must be 0-31, was " + btn)
+  end
+  return (joy-64)*32+btn
 end
 
 vbtn_base_clicks = VirtualButton(65,1)

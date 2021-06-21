@@ -1,6 +1,6 @@
 --[[
 rotfsev: FSUIPC event-based fast/slow event generator for rotary switches
-Version 20210616-0-1f8f8c0
+Version 20210620-0-e723f2a
 
 The MIT License (MIT)
 Copyright © 2021 Blake Buhlig
@@ -111,9 +111,12 @@ function init(defs)
 end
 
 function VirtualButton(joy,btn)
-  if (joy >= 64) and (btn >= 0) and (btn < 16) then
-     return ((joy-64)*16)+btn
+  if joy < 64 or joy > 72 then
+    error("Bad joy code, must be 64-72, was " + joy)
+  elseif btn < 0 or btn > 31 then
+    error("Bad btn code, must be 0-31, was " + btn)
   end
+  return (joy-64)*32+btn
 end
 
 
