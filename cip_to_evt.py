@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 """
 cip_to_evt -- Convert mobiflight CIP file to FSUIPC7 evt files
-Version 20210607-0-12da26b
+Version 20210621-0-5ca50c6
 
 The MIT License (MIT)
 Copyright © 2021 Blake Buhlig
@@ -65,7 +65,7 @@ for line in map(str.rstrip, cid_ifh):
    elif cur_group and cur_group != "STANDARD":
       if n_evts == None:
          fn = f'{n_ev_files:03}_{shortpfx}.evt'
-         evt_ofh = open(fn,"w")
+         evt_ofh = open(fn,"w",newline='\r\n')
          evt_ofh.write(f"[Events]\n")
          n_evts = 0
          n_ev_files = n_ev_files + 1

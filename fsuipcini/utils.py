@@ -1,6 +1,6 @@
 """
 utils.py -- General module utlities
-Version 20210620-0-2aba7e9
+Version 20210621-0-4fcf466
 
 The MIT License (MIT)
 Copyright © 2021 Blake Buhlig
@@ -34,6 +34,7 @@ TODO
 import re
 import inspect
 import string
+import sys
 import traceback
 from . import _globals
 
@@ -46,7 +47,6 @@ def _init_section():
 
 def section(header,fixed_tokens=None):
    _init_section()
-   print()
    print(f'[{header}]')
    if fixed_tokens:
       if isinstance(fixed_tokens,dict):
@@ -66,13 +66,16 @@ def val(x):
 
 def filter_ini(fn,*argv):
    with open(fn,'r') as ini_ifh:
-      copythru = True
-      for line in ini_ifh.read().splitlines():
-         section_match = re.match("^\[(?P<section>[^\.]+).*?\]",line)
-         if section_match:
-            copythru = all(section_match.group('section') != arg for arg in argv)
-         if copythru:
-            print(line)
+      inputlines = ini_ifh.read().splitlines()
+
+   sys.stdout = open(fn,'w',newline='\r\n')
+   copythru = True
+   for line in inputlines:
+      section_match = re.match("^\[(?P<section>[^\.]+).*?\]",line)
+      if section_match:
+         copythru = all(section_match.group('section') != arg for arg in argv)
+      if copythru:
+         print(line)
 
 
 _N2alpha = dict(zip(range(1, 27), string.ascii_lowercase))
