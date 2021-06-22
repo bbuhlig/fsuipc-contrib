@@ -1,0 +1,10 @@
+*.py text eol=auto
+*.lua text eol=crlf
+*.ini text eol=crlf
+*.txt text eol=crlf
+*.evt text eol=crlf
+*.bat text eol=crlf
+*.mcro text eol=crlf
+*.sh text eol=auto
+*.wav -text
+.git* text eol=auto
