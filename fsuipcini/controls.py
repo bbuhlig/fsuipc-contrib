@@ -1,6 +1,6 @@
 """
 controls.py -- Controls helper
-Version 20210616-0-102b38e
+Version 20210627-0-c6d3ec9
 
 The MIT License (MIT)
 Copyright © 2021 Blake Buhlig
@@ -52,7 +52,7 @@ def CreateControls(enumtypename,fn,
                    raw_name_regex="[\w\.]+"):
    enum_data=dict()
    full_name_data=dict()
-   with open(fn,'r') as ctrls_ifh:
+   with open(fn,'r', encoding="utf8") as ctrls_ifh:
       for line in ctrls_ifh.read().splitlines():
          ctrl_match = re.match(f"^(?P<ctrl_num>\d{{4,}})\s+(?P<raw_name>{raw_name_regex})",line)
          if ctrl_match:
