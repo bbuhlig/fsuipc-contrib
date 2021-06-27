@@ -1,0 +1,1525 @@
+#
+# custom_ctrls_info.tsv.DEMO.txt - custom controls list demo
+# Version 20210627-0-39979df
+#
+# The MIT License (MIT)
+# Copyright © 2021 Blake Buhlig
+#
+# Permission is hereby granted, free of charge, to any person obtaining a
+# copy of this software and associated documentation files (the
+# “Software”), to deal in the Software without restriction, including without
+# limitation the rights to use, copy, modify, merge, publish, distribute,
+# sublicense, and/or sell copies of the Software, and to permit persons to whom
+# the Software is furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+#
+#
+#
+# Description:
+# The gen_ini.py script provided as a demo for the fsuipcini library parses
+# this file when the alternative file "custom_ctrls_info.tsv.txt" (i.e.
+# without ".DEMO" in the filename) is not provided; see below. Referencing the
+# "Add on Custom Events" section of "FSUIPC7 for Advanced Users.pdf", this demo
+# file lists a set of MobiFlight events and their mappings to FSUIPC Control
+# IDs as they existed on my particular flight sim rig when this file was
+# created.
+#
+# When parsed by the following call provided by the fsuipcini python library...
+#  custom_ctrls_info_filename="custom_ctrls_info.tsv.DEMO.txt",
+#
+#  MBFCtrl = CreateControls("MBFCtrl",
+#                           custom_ctrls_info_filename,
+#                            ctrl_id_pfx='C',
+#                            name_filt_fn=lambda n:
+#                               re.sub(pattern=r'MobiFlight\.',repl='', count=1,
+#                                      flags=re.IGNORECASE,
+#                                      string=re.sub(pattern=r' .*', repl='',
+#                                                    string=n,count=1)),
+#                            calling_module=__name__)
+#
+# ... MBFCtrl will be a generated enum comprised of all control name-to-ID
+# mappings listed in this file, which was generated through executing the
+# following scripts provided alongside gen_ini.py:
+#  1. cip_to_evt.py: converts a MobiFlight CIP file to a set of custom *.evt
+#     files.
+#  2. gen_custom_ctrls_info.py: parses those *.evt files, along with the
+#     resulting FSUIPC7.ini EventFiles section, to derive the corresponding
+#     custom control IDs that would need to appear in FSUIPC7.ini button
+#     mappings. Additionally, the MobiFlight CIP file organizes its controls
+#     into "groups", useful to retain the context of in a third column.
+#
+# The scripts themselves contain more detailed information about their use.
+#
+# The above code will parse this file and generate enums from any lines
+# matching the pattern:
+#
+#    control#<whitespace>alphanumeric identifier
+
+# The "alphanumeric identifier" continues to be parsed until the first non-
+# alphanumeric (i.e. A-Z, a-z, 0-9) is encountered. Leading "MobiFlight."
+# prefixes in the alphanumeric identifier column are ignored and do not appear
+# in the generated enums.
+#
+# For example, referencing the first line below, the Python expression
+# "MBFCtrl.AS1000_PFD_VOL_1_INC.value" will evaluate to the integer number
+# 32768. The subsequent "group" in the third column will not be parsed by the
+# CreateControls library function nor reflected in any Python expression.
+# Another example, these comment lines starting with a hash character do not
+# match the above pattern, so will be ignored by the CreateControls function
+# call.
+#
+# Note the information in this demo file should be used only to demo this
+# python library feature enabling referencing of custom controls, because
+# for actual use on a given rig, control ID assignments for custom events
+# depend on what other *.evt files were pre-installed in a FSUIPC installation
+# folder, as well as other aspects of the installation on a rig such as
+# proper installation of the add-on per its instructions. For any attempted
+# use of a generated controls section by this framework, a user should run the
+# above scripts themselves on their own rig to generate their own custom
+# controls mapping file. The gen_custom_ctrls_info.py script will generate a
+# "custom_ctrls_info.tsv.txt" specific to the users' own installed *.evt files
+# and EventFiles section in the FSUIPC ini file. Presence of such a named file
+# will cause gen_ini.py to process it instead of this ...DEMO.txt file.
+#
+# The file format is meant to be human readable, easily importable into a
+# spreadsheet via Tab-Separated columnar data, and parsable by the above
+# function call.
+#
+# This file is a derivative of Mobiflight source distributed under the MIT
+# license, therefore its copyright and permission notice as retrieved
+# from https://bitbucket.org/mobiflight/mobiflightfc/src/master/README.md on
+# 2021/Jun/27 is included below. (The CIP file from which this file was
+# particularly derived did not have an embedded copyright or permission
+# notice).
+#
+# MIT License
+#
+# Copyright (c) 2016 MobiFlight
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+#
+
+ID   	Control                                                               	Group
+=====	======================================================================	===============
+32768	MobiFlight.AS1000_PFD_VOL_1_INC                                       	G1000 PFD
+32769	MobiFlight.AS1000_PFD_VOL_1_DEC                                       	G1000 PFD
+32770	MobiFlight.AS1000_PFD_VOL_2_INC                                       	G1000 PFD
+32771	MobiFlight.AS1000_PFD_VOL_2_DEC                                       	G1000 PFD
+32772	MobiFlight.AS1000_PFD_NAV_Switch                                      	G1000 PFD
+32773	MobiFlight.AS1000_PFD_NAV_Large_INC                                   	G1000 PFD
+32774	MobiFlight.AS1000_PFD_NAV_Large_DEC                                   	G1000 PFD
+32775	MobiFlight.AS1000_PFD_NAV_Small_INC                                   	G1000 PFD
+32776	MobiFlight.AS1000_PFD_NAV_Small_DEC                                   	G1000 PFD
+32777	MobiFlight.AS1000_PFD_NAV_Push                                        	G1000 PFD
+32778	MobiFlight.AS1000_PFD_COM_Switch_Long                                 	G1000 PFD
+32779	MobiFlight.AS1000_PFD_COM_Switch                                      	G1000 PFD
+32780	MobiFlight.AS1000_PFD_COM_Large_INC                                   	G1000 PFD
+32781	MobiFlight.AS1000_PFD_COM_Large_DEC                                   	G1000 PFD
+32782	MobiFlight.AS1000_PFD_COM_Small_INC                                   	G1000 PFD
+32783	MobiFlight.AS1000_PFD_COM_Small_DEC                                   	G1000 PFD
+32784	MobiFlight.AS1000_PFD_COM_Push                                        	G1000 PFD
+32785	MobiFlight.AS1000_PFD_BARO_INC                                        	G1000 PFD
+32786	MobiFlight.AS1000_PFD_BARO_DEC                                        	G1000 PFD
+32787	MobiFlight.AS1000_PFD_CRS_INC                                         	G1000 PFD
+32788	MobiFlight.AS1000_PFD_CRS_DEC                                         	G1000 PFD
+32789	MobiFlight.AS1000_PFD_CRS_PUSH                                        	G1000 PFD
+32790	MobiFlight.AS1000_PFD_HEADING_DEC                                     	G1000 PFD
+32791	MobiFlight.AS1000_PFD_HEADING_INC                                     	G1000 PFD
+32792	MobiFlight.AS1000_PFD_HEADING_FAST_DEC                                	G1000 PFD
+32793	MobiFlight.AS1000_PFD_HEADING_FAST_INC                                	G1000 PFD
+32794	MobiFlight.AS1000_PFD_HEADING_SYNC                                    	G1000 PFD
+32795	MobiFlight.AS1000_PFD_SOFTKEYS_1                                      	G1000 PFD
+32796	MobiFlight.AS1000_PFD_SOFTKEYS_2                                      	G1000 PFD
+32797	MobiFlight.AS1000_PFD_SOFTKEYS_3                                      	G1000 PFD
+32798	MobiFlight.AS1000_PFD_SOFTKEYS_4                                      	G1000 PFD
+32799	MobiFlight.AS1000_PFD_SOFTKEYS_5                                      	G1000 PFD
+32800	MobiFlight.AS1000_PFD_SOFTKEYS_6                                      	G1000 PFD
+32801	MobiFlight.AS1000_PFD_SOFTKEYS_7                                      	G1000 PFD
+32802	MobiFlight.AS1000_PFD_SOFTKEYS_8                                      	G1000 PFD
+32803	MobiFlight.AS1000_PFD_SOFTKEYS_9                                      	G1000 PFD
+32804	MobiFlight.AS1000_PFD_SOFTKEYS_10                                     	G1000 PFD
+32805	MobiFlight.AS1000_PFD_SOFTKEYS_11                                     	G1000 PFD
+32806	MobiFlight.AS1000_PFD_SOFTKEYS_12                                     	G1000 PFD
+32807	MobiFlight.AS1000_PFD_DIRECTTO                                        	G1000 PFD
+32808	MobiFlight.AS1000_PFD_ENT_Push                                        	G1000 PFD
+32809	MobiFlight.AS1000_PFD_CLR_Long                                        	G1000 PFD
+32810	MobiFlight.AS1000_PFD_CLR                                             	G1000 PFD
+32811	MobiFlight.AS1000_PFD_MENU_Push                                       	G1000 PFD
+32812	MobiFlight.AS1000_PFD_FPL_Push                                        	G1000 PFD
+32813	MobiFlight.AS1000_PFD_PROC_Push                                       	G1000 PFD
+32814	MobiFlight.AS1000_PFD_FMS_Upper_INC                                   	G1000 PFD
+32815	MobiFlight.AS1000_PFD_FMS_Upper_DEC                                   	G1000 PFD
+32816	MobiFlight.AS1000_PFD_FMS_Upper_PUSH                                  	G1000 PFD
+32817	MobiFlight.AS1000_PFD_FMS_Lower_INC                                   	G1000 PFD
+32818	MobiFlight.AS1000_PFD_FMS_Lower_DEC                                   	G1000 PFD
+32819	MobiFlight.AS1000_PFD_RANGE_INC                                       	G1000 PFD
+32820	MobiFlight.AS1000_PFD_RANGE_DEC                                       	G1000 PFD
+32821	MobiFlight.AS1000_PFD_JOYSTICK_PUSH                                   	G1000 PFD
+32822	MobiFlight.AS1000_PFD_ActivateMapCursor                               	G1000 PFD
+32823	MobiFlight.AS1000_PFD_DeactivateMapCursor                             	G1000 PFD
+32824	MobiFlight.AS1000_PFD_JOYSTICK_RIGHT                                  	G1000 PFD
+32825	MobiFlight.AS1000_PFD_JOYSTICK_LEFT                                   	G1000 PFD
+32826	MobiFlight.AS1000_PFD_JOYSTICK_UP                                     	G1000 PFD
+32827	MobiFlight.AS1000_PFD_JOYSTICK_DOWN                                   	G1000 PFD
+32828	MobiFlight.AS1000_MFD_VOL_1_INC                                       	G1000 MFD
+32829	MobiFlight.AS1000_MFD_VOL_1_DEC                                       	G1000 MFD
+32830	MobiFlight.AS1000_MFD_VOL_2_INC                                       	G1000 MFD
+32831	MobiFlight.AS1000_MFD_VOL_2_DEC                                       	G1000 MFD
+32832	MobiFlight.AS1000_MFD_NAV_Switch                                      	G1000 MFD
+32833	MobiFlight.AS1000_MFD_NAV_Large_INC                                   	G1000 MFD
+32834	MobiFlight.AS1000_MFD_NAV_Large_DEC                                   	G1000 MFD
+32835	MobiFlight.AS1000_MFD_NAV_Small_INC                                   	G1000 MFD
+32836	MobiFlight.AS1000_MFD_NAV_Small_DEC                                   	G1000 MFD
+32837	MobiFlight.AS1000_MFD_NAV_Push                                        	G1000 MFD
+32838	MobiFlight.AS1000_MFD_COM_Switch_Long                                 	G1000 MFD
+32839	MobiFlight.AS1000_MFD_COM_Switch                                      	G1000 MFD
+32840	MobiFlight.AS1000_MFD_COM_Large_INC                                   	G1000 MFD
+32841	MobiFlight.AS1000_MFD_COM_Large_DEC                                   	G1000 MFD
+32842	MobiFlight.AS1000_MFD_COM_Small_INC                                   	G1000 MFD
+32843	MobiFlight.AS1000_MFD_COM_Small_DEC                                   	G1000 MFD
+32844	MobiFlight.AS1000_MFD_COM_Push                                        	G1000 MFD
+32845	MobiFlight.AS1000_MFD_BARO_INC                                        	G1000 MFD
+32846	MobiFlight.AS1000_MFD_BARO_DEC                                        	G1000 MFD
+32847	MobiFlight.AS1000_MFD_CRS_INC                                         	G1000 MFD
+32848	MobiFlight.AS1000_MFD_CRS_DEC                                         	G1000 MFD
+32849	MobiFlight.AS1000_MFD_CRS_PUSH                                        	G1000 MFD
+32850	MobiFlight.AS1000_MFD_HEADING_DEC                                     	G1000 MFD
+32851	MobiFlight.AS1000_MFD_HEADING_INC                                     	G1000 MFD
+32852	MobiFlight.AS1000_MFD_HEADING_FAST_DEC                                	G1000 MFD
+32853	MobiFlight.AS1000_MFD_HEADING_FAST_INC                                	G1000 MFD
+32854	MobiFlight.AS1000_MFD_HEADING_SYNC                                    	G1000 MFD
+32855	MobiFlight.AS1000_MFD_SOFTKEYS_1                                      	G1000 MFD
+32856	MobiFlight.AS1000_MFD_SOFTKEYS_2                                      	G1000 MFD
+32857	MobiFlight.AS1000_MFD_SOFTKEYS_3                                      	G1000 MFD
+32858	MobiFlight.AS1000_MFD_SOFTKEYS_4                                      	G1000 MFD
+32859	MobiFlight.AS1000_MFD_SOFTKEYS_5                                      	G1000 MFD
+32860	MobiFlight.AS1000_MFD_SOFTKEYS_6                                      	G1000 MFD
+32861	MobiFlight.AS1000_MFD_SOFTKEYS_7                                      	G1000 MFD
+32862	MobiFlight.AS1000_MFD_SOFTKEYS_8                                      	G1000 MFD
+32863	MobiFlight.AS1000_MFD_SOFTKEYS_9                                      	G1000 MFD
+32864	MobiFlight.AS1000_MFD_SOFTKEYS_10                                     	G1000 MFD
+32865	MobiFlight.AS1000_MFD_SOFTKEYS_11                                     	G1000 MFD
+32866	MobiFlight.AS1000_MFD_SOFTKEYS_12                                     	G1000 MFD
+32867	MobiFlight.AS1000_MFD_DIRECTTO                                        	G1000 MFD
+32868	MobiFlight.AS1000_MFD_ENT_Push                                        	G1000 MFD
+32869	MobiFlight.AS1000_MFD_CLR_Long                                        	G1000 MFD
+32870	MobiFlight.AS1000_MFD_CLR                                             	G1000 MFD
+32871	MobiFlight.AS1000_MFD_MENU_Push                                       	G1000 MFD
+32872	MobiFlight.AS1000_MFD_FPL_Push                                        	G1000 MFD
+32873	MobiFlight.AS1000_MFD_PROC_Push                                       	G1000 MFD
+32874	MobiFlight.AS1000_MFD_FMS_Upper_INC                                   	G1000 MFD
+32875	MobiFlight.AS1000_MFD_FMS_Upper_DEC                                   	G1000 MFD
+32876	MobiFlight.AS1000_MFD_FMS_Upper_PUSH                                  	G1000 MFD
+32877	MobiFlight.AS1000_MFD_FMS_Lower_INC                                   	G1000 MFD
+32878	MobiFlight.AS1000_MFD_FMS_Lower_DEC                                   	G1000 MFD
+32879	MobiFlight.AS1000_MFD_RANGE_INC                                       	G1000 MFD
+32880	MobiFlight.AS1000_MFD_RANGE_DEC                                       	G1000 MFD
+32881	MobiFlight.AS1000_MFD_JOYSTICK_PUSH                                   	G1000 MFD
+32882	MobiFlight.AS1000_MFD_ActivateMapCursor                               	G1000 MFD
+32883	MobiFlight.AS1000_MFD_DeactivateMapCursor                             	G1000 MFD
+32884	MobiFlight.AS1000_MFD_JOYSTICK_RIGHT                                  	G1000 MFD
+32885	MobiFlight.AS1000_MFD_JOYSTICK_LEFT                                   	G1000 MFD
+32886	MobiFlight.AS1000_MFD_JOYSTICK_UP                                     	G1000 MFD
+32887	MobiFlight.AS1000_MFD_JOYSTICK_DOWN                                   	G1000 MFD
+32888	MobiFlight.AS1000_MFD_HEADING_SYNC                                    	G1000 MFD
+32889	MobiFlight.AS1000_MFD_FLC_Push                                        	G1000 Autopilot
+32890	MobiFlight.AS1000_MFD_NOSE_UP                                         	G1000 Autopilot
+32891	MobiFlight.AS1000_MFD_NOSE_DN                                         	G1000 Autopilot
+32892	MobiFlight.AS1000_MFD_FLIGHT_DIRECTOR_PUSH                            	G1000 Autopilot
+32893	MobiFlight.AS1000_AP_ALT_INC_100                                      	G1000 Autopilot
+32894	MobiFlight.AS1000_AP_ALT_DEC_100                                      	G1000 Autopilot
+32895	MobiFlight.AS1000_AP_ALT_INC_1000                                     	G1000 Autopilot
+32896	MobiFlight.AS1000_AP_ALT_DEC_1000                                     	G1000 Autopilot
+32897	MobiFlight.AS1000_MID_COM_1_Push                                      	G1000 MID
+32898	MobiFlight.AS1000_MID_COM_2_Push                                      	G1000 MID
+32899	MobiFlight.AS1000_MID_COM_3_Push                                      	G1000 MID
+32900	MobiFlight.AS1000_MID_COM_Mic_1_Push                                  	G1000 MID
+32901	MobiFlight.AS1000_MID_COM_Mic_2_Push                                  	G1000 MID
+32902	MobiFlight.AS1000_MID_COM_Mic_3_Push                                  	G1000 MID
+32903	MobiFlight.AS1000_MID_COM_Swap_1_2_Push                               	G1000 MID
+32904	MobiFlight.AS1000_MID_TEL_Push                                        	G1000 MID
+32905	MobiFlight.AS1000_MID_PA_Push                                         	G1000 MID
+32906	MobiFlight.AS1000_MID_SPKR_Push                                       	G1000 MID
+32907	MobiFlight.AS1000_MID_MKR_Mute_Push                                   	G1000 MID
+32908	MobiFlight.AS1000_MID_HI_SENS_Push                                    	G1000 MID
+32909	MobiFlight.AS1000_MID_DME_Push                                        	G1000 MID
+32910	MobiFlight.AS1000_MID_NAV_1_Push                                      	G1000 MID
+32911	MobiFlight.AS1000_MID_NAV_2_Push                                      	G1000 MID
+32912	MobiFlight.AS1000_MID_ADF_Push                                        	G1000 MID
+32913	MobiFlight.AS1000_MID_AUX_Push                                        	G1000 MID
+32914	MobiFlight.AS1000_MID_MAN_SQ_Push                                     	G1000 MID
+32915	MobiFlight.AS1000_MID_Play_Push                                       	G1000 MID
+32916	MobiFlight.AS1000_MID_Isolate_Pilot_Push                              	G1000 MID
+32917	MobiFlight.AS1000_MID_Isolate_Copilot_Push                            	G1000 MID
+32918	MobiFlight.AS1000_MID_Pass_Copilot_INC                                	G1000 MID
+32919	MobiFlight.AS1000_MID_Pass_Copilot_DEC                                	G1000 MID
+32920	MobiFlight.AS1000_MID_Display_Backup_Push                             	G1000 MID
+32921	MobiFlight.AS3000_PFD_SOFTKEYS_1                                      	G3000 PFD
+32922	MobiFlight.AS3000_PFD_SOFTKEYS_2                                      	G3000 PFD
+32923	MobiFlight.AS3000_PFD_SOFTKEYS_3                                      	G3000 PFD
+32924	MobiFlight.AS3000_PFD_SOFTKEYS_4                                      	G3000 PFD
+32925	MobiFlight.AS3000_PFD_SOFTKEYS_5                                      	G3000 PFD
+32926	MobiFlight.AS3000_PFD_SOFTKEYS_6                                      	G3000 PFD
+32927	MobiFlight.AS3000_PFD_SOFTKEYS_7                                      	G3000 PFD
+32928	MobiFlight.AS3000_PFD_SOFTKEYS_8                                      	G3000 PFD
+32929	MobiFlight.AS3000_PFD_SOFTKEYS_9                                      	G3000 PFD
+32930	MobiFlight.AS3000_PFD_SOFTKEYS_10                                     	G3000 PFD
+32931	MobiFlight.AS3000_PFD_SOFTKEYS_11                                     	G3000 PFD
+32932	MobiFlight.AS3000_PFD_SOFTKEYS_12                                     	G3000 PFD
+32933	MobiFlight.AS3000_PFD_BottomKnob_Small_INC                            	G3000 PFD Top Panel
+32934	MobiFlight.AS3000_PFD_BottomKnob_Small_DEC                            	G3000 PFD Top Panel
+32935	MobiFlight.AS3000_PFD_BottomKnob_Push_Long                            	G3000 PFD Top Panel
+32936	MobiFlight.AS3000_PFD_BottomKnob_Push                                 	G3000 PFD Top Panel
+32937	MobiFlight.AS3000_PFD_BottomKnob_Large_INC                            	G3000 PFD Top Panel
+32938	MobiFlight.AS3000_PFD_BottomKnob_Large_DEC                            	G3000 PFD Top Panel
+32939	MobiFlight.AS3000_PFD_TopKnob_Large_INC                               	G3000 PFD Top Panel
+32940	MobiFlight.AS3000_PFD_TopKnob_Large_DEC                               	G3000 PFD Top Panel
+32941	MobiFlight.AS3000_PFD_TopKnob_Small_INC                               	G3000 PFD Top Panel
+32942	MobiFlight.AS3000_PFD_TopKnob_Small_DEC                               	G3000 PFD Top Panel
+32943	MobiFlight.AS3000_MFD_SOFTKEYS_1                                      	G3000 MFD
+32944	MobiFlight.AS3000_MFD_SOFTKEYS_2                                      	G3000 MFD
+32945	MobiFlight.AS3000_MFD_SOFTKEYS_3                                      	G3000 MFD
+32946	MobiFlight.AS3000_MFD_SOFTKEYS_4                                      	G3000 MFD
+32947	MobiFlight.AS3000_MFD_SOFTKEYS_5                                      	G3000 MFD
+32948	MobiFlight.AS3000_MFD_SOFTKEYS_6                                      	G3000 MFD
+32949	MobiFlight.AS3000_MFD_SOFTKEYS_7                                      	G3000 MFD
+32950	MobiFlight.AS3000_MFD_SOFTKEYS_8                                      	G3000 MFD
+32951	MobiFlight.AS3000_MFD_SOFTKEYS_9                                      	G3000 MFD
+32952	MobiFlight.AS3000_MFD_SOFTKEYS_10                                     	G3000 MFD
+32953	MobiFlight.AS3000_MFD_SOFTKEYS_11                                     	G3000 MFD
+32954	MobiFlight.AS3000_MFD_SOFTKEYS_12                                     	G3000 MFD
+32955	MobiFlight.AS3000_TSC_Horizontal_SoftKey_1                            	GTX 580 TBM
+32956	MobiFlight.AS3000_TSC_Horizontal_SoftKey_2                            	GTX 580 TBM
+32957	MobiFlight.AS3000_TSC_Horizontal_SoftKey_3                            	GTX 580 TBM
+32958	MobiFlight.AS3000_TSC_Horizontal_TopKnob_Large_INC                    	GTX 580 TBM
+32959	MobiFlight.AS3000_TSC_Horizontal_TopKnob_Large_DEC                    	GTX 580 TBM
+32960	MobiFlight.AS3000_TSC_Horizontal_TopKnob_Small_INC                    	GTX 580 TBM
+32961	MobiFlight.AS3000_TSC_Horizontal_TopKnob_Small_DEC                    	GTX 580 TBM
+32962	MobiFlight.AS3000_TSC_Horizontal_TopKnob_Push_Long                    	GTX 580 TBM
+32963	MobiFlight.AS3000_TSC_Horizontal_TopKnob_Push                         	GTX 580 TBM
+32964	MobiFlight.AS3000_TSC_Horizontal_BottomKnob_Small_INC                 	GTX 580 TBM
+32965	MobiFlight.AS3000_TSC_Horizontal_BottomKnob_Small_DEC                 	GTX 580 TBM
+32966	MobiFlight.AS3000_TSC_Horizontal_BottomKnob_Push                      	GTX 580 TBM
+32967	MobiFlight.AS3000_TSC_Vertical_BottomKnob_Small_INC                   	GTX 580 Longitude
+32968	MobiFlight.AS3000_TSC_Vertical_BottomKnob_Small_DEC                   	GTX 580 Longitude
+32969	MobiFlight.AS3000_TSC_Vertical_BottomKnob_Push_Long                   	GTX 580 Longitude
+32970	MobiFlight.AS3000_TSC_Vertical_BottomKnob_Push                        	GTX 580 Longitude
+32971	MobiFlight.AS3000_TSC_Vertical_BottomKnob_Large_INC                   	GTX 580 Longitude
+32972	MobiFlight.AS3000_TSC_Vertical_BottomKnob_Large_DEC                   	GTX 580 Longitude
+32973	MobiFlight.AS3000_TSC_Vertical_TopKnob_Large_INC                      	GTX 580 Longitude
+32974	MobiFlight.AS3000_TSC_Vertical_TopKnob_Large_DEC                      	GTX 580 Longitude
+32975	MobiFlight.AS3000_TSC_Vertical_TopKnob_Small_INC                      	GTX 580 Longitude
+32976	MobiFlight.AS3000_TSC_Vertical_TopKnob_Small_DEC                      	GTX 580 Longitude
+32977	MobiFlight.KAP140_Push_AP                                             	KAP140
+32978	MobiFlight.KAP140_Push_HDG                                            	KAP140
+32979	MobiFlight.KAP140_Push_NAV                                            	KAP140
+32980	MobiFlight.KAP140_Push_APR                                            	KAP140
+32981	MobiFlight.KAP140_Push_REV                                            	KAP140
+32982	MobiFlight.KAP140_Push_ALT                                            	KAP140
+32983	MobiFlight.KAP140_Push_UP                                             	KAP140
+32984	MobiFlight.KAP140_Push_DN                                             	KAP140
+32985	MobiFlight.KAP140_Long_Push_BARO                                      	KAP140
+32986	MobiFlight.KAP140_Push_BARO                                           	KAP140
+32987	MobiFlight.KAP140_Push_ARM                                            	KAP140
+32988	MobiFlight.KAP140_Knob_Inner_INC                                      	KAP140
+32989	MobiFlight.KAP140_Knob_Inner_DEC                                      	KAP140
+32990	MobiFlight.KAP140_Knob_Outer_INC                                      	KAP140
+32991	MobiFlight.KAP140_Knob_Outer_DEC                                      	KAP140
+32992	MobiFlight.oclock_select                                              	M803
+32993	MobiFlight.oclock_oat                                                 	M803
+32994	MobiFlight.oclock_control_long                                        	M803
+32995	MobiFlight.oclock_control                                             	M803
+32996	MobiFlight.AS530_ENT_Push                                             	GNS 530
+32997	MobiFlight.AS530_MENU_Push                                            	GNS 530
+32998	MobiFlight.AS530_FPL_Push                                             	GNS 530
+32999	MobiFlight.AS530_DirectTo_Push                                        	GNS 530
+33000	MobiFlight.AS530_CLR_Push_Long                                        	GNS 530
+33001	MobiFlight.AS530_CLR_Push                                             	GNS 530
+33002	MobiFlight.AS530_MSG_Push                                             	GNS 530
+33003	MobiFlight.AS530_OBS_Push                                             	GNS 530
+33004	MobiFlight.AS530_VNAV_Push                                            	GNS 530
+33005	MobiFlight.AS530_PROC_Push                                            	GNS 530
+33006	MobiFlight.AS530_COMSWAP_Push                                         	GNS 530
+33007	MobiFlight.AS530_NAVSWAP_Push                                         	GNS 530
+33008	MobiFlight.AS530_RNG_Dezoom                                           	GNS 530
+33009	MobiFlight.AS530_RNG_Zoom                                             	GNS 530
+33010	MobiFlight.AS530_RightLargeKnob_Right                                 	GNS 530
+33011	MobiFlight.AS530_RightLargeKnob_Left                                  	GNS 530
+33012	MobiFlight.AS530_LeftLargeKnob_Right                                  	GNS 530
+33013	MobiFlight.AS530_LeftLargeKnob_Left                                   	GNS 530
+33014	MobiFlight.AS530_RightSmallKnob_Right                                 	GNS 530
+33015	MobiFlight.AS530_RightSmallKnob_Left                                  	GNS 530
+33016	MobiFlight.AS530_RightSmallKnob_Push                                  	GNS 530
+33017	MobiFlight.AS530_LeftSmallKnob_Right                                  	GNS 530
+33018	MobiFlight.AS530_LeftSmallKnob_Left                                   	GNS 530
+33019	MobiFlight.AS530_LeftSmallKnob_Push                                   	GNS 530
+33020	MobiFlight.AS430_ENT_Push                                             	GNS 430
+33021	MobiFlight.AS430_MENU_Push                                            	GNS 430
+33022	MobiFlight.AS430_FPL_Push                                             	GNS 430
+33023	MobiFlight.AS430_DirectTo_Push                                        	GNS 430
+33024	MobiFlight.AS430_CLR_Push_Long                                        	GNS 430
+33025	MobiFlight.AS430_CLR_Push                                             	GNS 430
+33026	MobiFlight.AS430_MSG_Push                                             	GNS 430
+33027	MobiFlight.AS430_OBS_Push                                             	GNS 430
+33028	MobiFlight.AS430_PROC_Push                                            	GNS 430
+33029	MobiFlight.AS430_COMSWAP_Push                                         	GNS 430
+33030	MobiFlight.AS430_NAVSWAP_Push                                         	GNS 430
+33031	MobiFlight.AS430_RNG_Dezoom                                           	GNS 430
+33032	MobiFlight.AS430_RNG_Zoom                                             	GNS 430
+33033	MobiFlight.AS430_RightLargeKnob_Right                                 	GNS 430
+33034	MobiFlight.AS430_RightLargeKnob_Left                                  	GNS 430
+33035	MobiFlight.AS430_LeftLargeKnob_Right                                  	GNS 430
+33036	MobiFlight.AS430_LeftLargeKnob_Left                                   	GNS 430
+33037	MobiFlight.AS430_RightSmallKnob_Right                                 	GNS 430
+33038	MobiFlight.AS430_RightSmallKnob_Left                                  	GNS 430
+33039	MobiFlight.AS430_RightSmallKnob_Push                                  	GNS 430
+33040	MobiFlight.AS430_LeftSmallKnob_Right                                  	GNS 430
+33041	MobiFlight.AS430_LeftSmallKnob_Left                                   	GNS 430
+33042	MobiFlight.AS430_LeftSmallKnob_Push                                   	GNS 430
+33043	MobiFlight.adf_AntAdf                                                 	KR87
+33044	MobiFlight.adf_bfo                                                    	KR87
+33045	MobiFlight.adf_frqTransfert                                           	KR87
+33046	MobiFlight.adf_FltEt                                                  	KR87
+33047	MobiFlight.adf_SetRst                                                 	KR87
+33048	MobiFlight.TransponderIDT                                             	KT76C
+33049	MobiFlight.TransponderVFR                                             	KT76C
+33050	MobiFlight.TransponderCLR                                             	KT76C
+33051	MobiFlight.Transponder0                                               	KT76C
+33052	MobiFlight.Transponder1                                               	KT76C
+33053	MobiFlight.Transponder2                                               	KT76C
+33054	MobiFlight.Transponder3                                               	KT76C
+33055	MobiFlight.Transponder4                                               	KT76C
+33056	MobiFlight.Transponder5                                               	KT76C
+33057	MobiFlight.Transponder6                                               	KT76C
+33058	MobiFlight.Transponder7                                               	KT76C
+33059	MobiFlight.TransponderOFF                                             	KT76C
+33060	MobiFlight.TransponderSTBY                                            	KT76C
+33061	MobiFlight.TransponderTST                                             	KT76C
+33062	MobiFlight.TransponderON                                              	KT76C
+33063	MobiFlight.TransponderALT                                             	KT76C
+33064	MobiFlight.ASCRJ_FCP_AP_ENG_PRESS                                     	ASCRJ AP
+33065	MobiFlight.ASCRJ_FCP_AP_ENG_RELEASE                                   	ASCRJ AP
+33066	MobiFlight.ASCRJ_FCP_AP_DISC_PRESS                                    	ASCRJ AP
+33067	MobiFlight.ASCRJ_FCP_AP_DISC_RELEASE                                  	ASCRJ AP
+33068	MobiFlight.ASCRJ_FCP_SPEED_PRESS                                      	ASCRJ AP
+33069	MobiFlight.ASCRJ_FCP_SPEED_RELEASE                                    	ASCRJ AP
+33070	MobiFlight.ASCRJ_FCP_APPR_PRESS                                       	ASCRJ AP
+33071	MobiFlight.ASCRJ_FCP_APPR_RELEASE                                     	ASCRJ AP
+33072	MobiFlight.ASCRJ_FCP_HDG_PRESS                                        	ASCRJ AP
+33073	MobiFlight.ASCRJ_FCP_HDG_RELEASE                                      	ASCRJ AP
+33074	MobiFlight.ASCRJ_FCP_NAV_PRESS                                        	ASCRJ AP
+33075	MobiFlight.ASCRJ_FCP_NAV_RELEASE                                      	ASCRJ AP
+33076	MobiFlight.ASCRJ_FCP_ALT_PRESS                                        	ASCRJ AP
+33077	MobiFlight.ASCRJ_FCP_ALT_RELEASE                                      	ASCRJ AP
+33078	MobiFlight.ASCRJ_FCP_VS_PRESS                                         	ASCRJ AP
+33079	MobiFlight.ASCRJ_FCP_VS_RELEASE                                       	ASCRJ AP
+33080	MobiFlight.ASCRJ_FCP_FD1_PRESS                                        	ASCRJ AP
+33081	MobiFlight.ASCRJ_FCP_FD1_RELEASE                                      	ASCRJ AP
+33082	MobiFlight.ASCRJ_FCP_TURB_PRESS                                       	ASCRJ AP
+33083	MobiFlight.ASCRJ_FCP_TURB_RELEASE                                     	ASCRJ AP
+33084	MobiFlight.ASCRJ_FCP_BC_PRESS                                         	ASCRJ AP
+33085	MobiFlight.ASCRJ_FCP_BC_RELEASE                                       	ASCRJ AP
+33086	MobiFlight.ASCRJ_FCP_12BANK_PRESS                                     	ASCRJ AP
+33087	MobiFlight.ASCRJ_FCP_12BANK_RELEASE                                   	ASCRJ AP
+33088	MobiFlight.ASCRJ_FCP_VNAV_PRESS                                       	ASCRJ AP
+33089	MobiFlight.ASCRJ_FCP_VNAV_RELEASE                                     	ASCRJ AP
+33090	MobiFlight.ASCRJ_FCP_CRS1_SEL_INC                                     	ASCRJ AP
+33091	MobiFlight.ASCRJ_FCP_CRS1_SEL_DEC                                     	ASCRJ AP
+33092	MobiFlight.ASCRJ_FCP_CRS1_DIRECT_INC                                  	ASCRJ AP
+33093	MobiFlight.ASCRJ_FCP_CRS1_DIRECT_DEC                                  	ASCRJ AP
+33094	MobiFlight.ASCRJ_FCP_SPEED_SEL_INC                                    	ASCRJ AP
+33095	MobiFlight.ASCRJ_FCP_SPEED_SEL_DEC                                    	ASCRJ AP
+33096	MobiFlight.ASCRJ_FCP_SPEED_MODE_PRESS                                 	ASCRJ AP
+33097	MobiFlight.ASCRJ_FCP_SPEED_MODE_RELEASE                               	ASCRJ AP
+33098	MobiFlight.ASCRJ_FCP_HDG_SEL_INC                                      	ASCRJ AP
+33099	MobiFlight.ASCRJ_FCP_HDG_SEL_DEC                                      	ASCRJ AP
+33100	MobiFlight.ASCRJ_FCP_HDG_SYNC_PRESS                                   	ASCRJ AP
+33101	MobiFlight.ASCRJ_FCP_HDG_SYNC_RELEASE                                 	ASCRJ AP
+33102	MobiFlight.ASCRJ_FCP_ALT_SEL_INC                                      	ASCRJ AP
+33103	MobiFlight.ASCRJ_FCP_ALT_SEL_DEC                                      	ASCRJ AP
+33104	MobiFlight.ASCRJ_FCP_ALT_CANCEL_PRESS                                 	ASCRJ AP
+33105	MobiFlight.ASCRJ_FCP_ALT_CANCEL_RELEASE                               	ASCRJ AP
+33106	MobiFlight.ASCRJ_FCP_WHEEL_SEL_INC                                    	ASCRJ AP
+33107	MobiFlight.ASCRJ_FCP_WHEEL_SEL_DEC                                    	ASCRJ AP
+33108	MobiFlight.ASCRJ_FCP_XFR_PRESS                                        	ASCRJ AP
+33109	MobiFlight.ASCRJ_FCP_XFR_RELEASE                                      	ASCRJ AP
+33110	MobiFlight.ASCRJ_FCP_CRS2_SEL_INC                                     	ASCRJ AP
+33111	MobiFlight.ASCRJ_FCP_CRS2_SEL_DEC                                     	ASCRJ AP
+33112	MobiFlight.ASCRJ_FCP_CRS2_DIRECT_PRESS                                	ASCRJ AP
+33113	MobiFlight.ASCRJ_FCP_CRS2_DIRECT_RELEASE                              	ASCRJ AP
+33114	MobiFlight.ASCRJ_FCP_IAS_MACH_PRESS                                   	ASCRJ AP
+33115	MobiFlight.ASCRJ_FCP_IAS_MACH_RELEASE                                 	ASCRJ AP
+33116	MobiFlight.ASCRJ_FCP_FD2_PRESS                                        	ASCRJ AP
+33117	MobiFlight.ASCRJ_FCP_FD2_RELEASE                                      	ASCRJ AP
+33118	MobiFlight.ASCRJ_ECAM_PRI_PRESS                                       	ASCRJ EICAS
+33119	MobiFlight.ASCRJ_ECAM_STEP_PRESS                                      	ASCRJ EICAS
+33120	MobiFlight.ASCRJ_ELEC_BATTMASTER_SWITCH                               	ASCRJ ELEC
+33121	MobiFlight.ASCRJ_EXTL_NAV_SWITCH                                      	ASCRJ EXTL
+33122	MobiFlight.ASCRJ_EXTL_BEACON_SWITCH                                   	ASCRJ EXTL
+33123	MobiFlight.ASCRJ_EXTL_STROBE_SWITCH                                   	ASCRJ EXTL
+33124	MobiFlight.ASCRJ_EXTL_LOGO_SWITCH                                     	ASCRJ EXTL
+33125	MobiFlight.ASCRJ_EXTL_WING_SWITCH                                     	ASCRJ EXTL
+33126	MobiFlight.ASCRJ_OVHD_LDG_LEFT_SWITCH                                 	ASCRJ EXTL
+33127	MobiFlight.ASCRJ_OVHD_LDG_NOSE_SWITCH                                 	ASCRJ EXTL
+33128	MobiFlight.ASCRJ_OVHD_LDG_RIGHT_SWITCH                                	ASCRJ EXTL
+33129	MobiFlight.ASCRJ_OVHD_TAXI_SWITCH                                     	ASCRJ EXTL
+33130	MobiFlight.ASCRJ_OVHD_EMER_LTS_SWITCH                                 	ASCRJ EXTL
+33131	MobiFlight.ASCRJ_AIRC_RECIRC_FAN_SWITCH                               	ASCRJ AIRC
+33132	MobiFlight.ASCRJ_AIRC_AFT_CARGO_AIRCOND_SWITCH                        	ASCRJ AIRC
+33133	MobiFlight.ASCRJ_AIRC_PACK_L_SWITCH                                   	ASCRJ AIRC
+33134	MobiFlight.ASCRJ_AIRC_PACK_R_SWITCH                                   	ASCRJ AIRC
+33135	MobiFlight.ASCRJ_AIRC_TEMPCTRL_CKPT_DEC                               	ASCRJ AIRC
+33136	MobiFlight.ASCRJ_AIRC_TEMPCTRL_CKPT_INC                               	ASCRJ AIRC
+33137	MobiFlight.ASCRJ_AIRC_TEMPCTRL_CABIN_DEC                              	ASCRJ AIRC
+33138	MobiFlight.ASCRJ_AIRC_TEMPCTRL_CABIN_INC                              	ASCRJ AIRC
+33139	MobiFlight.ASCRJ_REV_1_ARM_SWITCH_TOGGLE                              	ASCRJ REV
+33140	MobiFlight.ASCRJ_REV_2_ARM_SWITCH_TOGGLE                              	ASCRJ REV
+33141	MobiFlight.ASCRJ_IRS1_KNOB_SWITCH                                     	ASCRJ IRS
+33142	MobiFlight.ASCRJ_IRS2_KNOB_SWITCH                                     	ASCRJ IRS
+33143	MobiFlight.ASCRJ_APU_PWRFUEL_PRESS                                    	ASCRJ APU
+33144	MobiFlight.ASCRJ_APU_PWRFUEL_RELEASE                                  	ASCRJ APU
+33145	MobiFlight.ASCRJ_APU_STARTSTOP_PRESS                                  	ASCRJ APU
+33146	MobiFlight.ASCRJ_APU_STARTSTOP_RELEASE                                	ASCRJ APU
+33147	MobiFlight.ASCRJ_GEAR_GEAR_LEVER_SWITCH_ON                            	ASCRJ GEAR LEVER
+33148	MobiFlight.ASCRJ_GEAR_GEAR_LEVER_SWITCH_OFF                           	ASCRJ GEAR LEVER
+33149	MobiFlight.ASCRJ_PARK_BRAKE_SWITCH_ON                                 	ASCRJ PARK BRK
+33150	MobiFlight.ASCRJ_PARK_BRAKE_SWITCH_OFF                                	ASCRJ PARK BRK
+33151	MobiFlight.ASCRJ_LSP_BARO_CHANGE_INC                                  	ASCRJ LSP
+33152	MobiFlight.ASCRJ_LSP_BARO_CHANGE_DEC                                  	ASCRJ LSP
+33153	MobiFlight.ASCRJ_LSP_BARO_STD_PRESS                                   	ASCRJ LSP
+33154	MobiFlight.ASCRJ_LSP_BARO_STD_RELEASE                                 	ASCRJ LSP
+33155	MobiFlight.ASCRJ_LSP_NAV_SOURCE_CHANGE_INC                            	ASCRJ LSP
+33156	MobiFlight.ASCRJ_LSP_NAV_SOURCE_CHANGE_DEC                            	ASCRJ LSP
+33157	MobiFlight.ASCRJ_LSP_NAV_SOURCE_XSIDE_PRESS                           	ASCRJ LSP
+33158	MobiFlight.ASCRJ_LSP_NAV_SOURCE_XSIDE_RELEASE                         	ASCRJ LSP
+33159	MobiFlight.ASCRJ_LSP_ZOOM_RANGE_CHANGE_INC                            	ASCRJ LSP
+33160	MobiFlight.ASCRJ_LSP_ZOOM_RANGE_CHANGE_DEC                            	ASCRJ LSP
+33161	MobiFlight.ASCRJ_XPDR_ATC_SEL_PRESS                                   	ASCRJ XPDR
+33162	MobiFlight.ASCRJ_XPDR_ATC_SEL_RELEASE                                 	ASCRJ XPDR
+33163	MobiFlight.ASCRJ_LSP_CLCK_CHR_BTN_PRESS                               	ASCRJ CHRONO
+33164	MobiFlight.ASCRJ_LSP_CLCK_CHR_BTN_RELEASE                             	ASCRJ CHRONO
+33165	MobiFlight.ASCRJ_MASTER_WARN_PRESS                                    	ASCRJ MASTER
+33166	MobiFlight.ASCRJ_MASTER_WARN_RELEASE                                  	ASCRJ MASTER
+33167	MobiFlight.ASCRJ_MASTER_CAUT_PRESS                                    	ASCRJ MASTER
+33168	MobiFlight.ASCRJ_MASTER_CAUT_RELEASE                                  	ASCRJ MASTER
+33169	MobiFlight.ASCRJ_AICE_WING_SWITCH                                     	ASCRJ DEICE
+33170	MobiFlight.ASCRJ_AICE_COWL_L_SWITCH                                   	ASCRJ DEICE
+33171	MobiFlight.ASCRJ_AICE_COWL_R_SWITCH                                   	ASCRJ DEICE
+33172	MobiFlight.ASCRJ_AICE_PHEAT_L_SWITCH                                  	ASCRJ DEICE
+33173	MobiFlight.ASCRJ_AICE_PHEAT_R_SWITCH                                  	ASCRJ DEICE
+33174	MobiFlight.ASCRJ_AICE_WSHLD_L_SWITCH                                  	ASCRJ DEICE
+33175	MobiFlight.ASCRJ_AICE_WSHLD_R_SWITCH                                  	ASCRJ DEICE
+33176	MobiFlight.ASCRJ_LSP_DSPL_INC                                         	ASCRJ CABIN_LIGHTS
+33177	MobiFlight.ASCRJ_LSP_DSPL_DEC                                         	ASCRJ CABIN_LIGHTS
+33178	MobiFlight.ASCRJ_LSP_INTEG_INC                                        	ASCRJ CABIN_LIGHTS
+33179	MobiFlight.ASCRJ_LSP_INTEG_DEC                                        	ASCRJ CABIN_LIGHTS
+33180	MobiFlight.ASCRJ_LSP_FLOOD_INC                                        	ASCRJ CABIN_LIGHTS
+33181	MobiFlight.ASCRJ_LSP_FLOOD_DEC                                        	ASCRJ CABIN_LIGHTS
+33182	MobiFlight.ASCRJ_RSP_DSPL_INC                                         	ASCRJ CABIN_LIGHTS
+33183	MobiFlight.ASCRJ_RSP_DSPL_DEC                                         	ASCRJ CABIN_LIGHTS
+33184	MobiFlight.ASCRJ_RSP_INTEG_INC                                        	ASCRJ CABIN_LIGHTS
+33185	MobiFlight.ASCRJ_RSP_INTEG_DEC                                        	ASCRJ CABIN_LIGHTS
+33186	MobiFlight.ASCRJ_RSP_FLOOD_INC                                        	ASCRJ CABIN_LIGHTS
+33187	MobiFlight.ASCRJ_RSP_FLOOD_DEC                                        	ASCRJ CABIN_LIGHTS
+33188	MobiFlight.ASCRJ_INTL_DSPL_BRT_INC                                    	ASCRJ CABIN_LIGHTS
+33189	MobiFlight.ASCRJ_INTL_DSPL_BRT_DEC                                    	ASCRJ CABIN_LIGHTS
+33190	MobiFlight.ASCRJ_INTL_INTEG_BRT_INC                                   	ASCRJ CABIN_LIGHTS
+33191	MobiFlight.ASCRJ_INTL_INTEG_BRT_DEC                                   	ASCRJ CABIN_LIGHTS
+33192	MobiFlight.ASCRJ_INTL_FLOOD_BRT_INC                                   	ASCRJ CABIN_LIGHTS
+33193	MobiFlight.ASCRJ_INTL_FLOOD_BRT_DEC                                   	ASCRJ CABIN_LIGHTS
+33194	MobiFlight.ASCRJ_INTL_CB_PNL_BRT_INC                                  	ASCRJ CABIN_LIGHTS
+33195	MobiFlight.ASCRJ_INTL_CB_PNL_BRT_DEC                                  	ASCRJ CABIN_LIGHTS
+33196	MobiFlight.ASCRJ_INTL_OVHD_INC                                        	ASCRJ CABIN_LIGHTS
+33197	MobiFlight.ASCRJ_INTL_OVHD_DEC                                        	ASCRJ CABIN_LIGHTS
+33198	MobiFlight.ASCRJ_DM_LT_CPT_INC                                        	ASCRJ CABIN_LIGHTS
+33199	MobiFlight.ASCRJ_DM_LT_CPT_DEC                                        	ASCRJ CABIN_LIGHTS
+33200	MobiFlight.ASCRJ_DM_LT_FO_INC                                         	ASCRJ CABIN_LIGHTS
+33201	MobiFlight.ASCRJ_DM_LT_FO_DEC                                         	ASCRJ CABIN_LIGHTS
+33202	MobiFlight.ASCRJ_MCDU1_BRT_INC                                        	ASCRJ MCDU1-MCDU2 BRIGHTNESS
+33203	MobiFlight.ASCRJ_MCDU1_BRT_DEC                                        	ASCRJ MCDU1-MCDU2 BRIGHTNESS
+33204	MobiFlight.ASCRJ_MCDU2_BRT_INC                                        	ASCRJ MCDU1-MCDU2 BRIGHTNESS
+33205	MobiFlight.ASCRJ_MCDU2_BRT_DEC                                        	ASCRJ MCDU1-MCDU2 BRIGHTNESS
+33206	MobiFlight.ASCRJ_XPDR_ATC_SEL_SWITCH                                  	ASCRJ RADIOS
+33207	MobiFlight.ASCRJ_RTU1_KNOB_OUTER_INC                                  	ASCRJ RADIOS
+33208	MobiFlight.ASCRJ_RTU1_KNOB_OUTER_DEC                                  	ASCRJ RADIOS
+33209	MobiFlight.ASCRJ_RTU1_KNOB_INNER_INC                                  	ASCRJ RADIOS
+33210	MobiFlight.ASCRJ_RTU1_KNOB_INNER_DEC                                  	ASCRJ RADIOS
+33211	MobiFlight.ASCRJ_RTU1_LSK1L_SWITCH_PRESS                              	ASCRJ RADIOS
+33212	MobiFlight.ASCRJ_RTU1_LSK2L_SWITCH_PRESS                              	ASCRJ RADIOS
+33213	MobiFlight.ASCRJ_RTU1_LSK3L_SWITCH_PRESS                              	ASCRJ RADIOS
+33214	MobiFlight.ASCRJ_RTU1_LSK4L_SWITCH_PRESS                              	ASCRJ RADIOS
+33215	MobiFlight.ASCRJ_RTU1_IDENT_PRESS                                     	ASCRJ RADIOS
+33216	MobiFlight.ASCRJ_OVHD_NO_SMOKING_SWITCH                               	ASCRJ BELTS NO-SMOKE SWITCHES
+33217	MobiFlight.ASCRJ_OVHD_SEAT_BELTS_SWITCH                               	ASCRJ BELTS NO-SMOKE SWITCHES
+33218	MobiFlight.ASCRJ_TQ_TOGA_SWITCH                                       	ASCRJ TOGA
+33219	MobiFlight.ASCRJ_ELEC_GPU_INUSE_SWITCH                                	ASCRJ GPU IN USE SWITCH
+33220	MobiFlight.ASCRJ_FUEL_PUMP_L_SWITCH                                   	ASCRJ BOOST PUMP SWITCHES
+33221	MobiFlight.ASCRJ_FUEL_PUMP_R_SWITCH                                   	ASCRJ BOOST PUMP SWITCHES
+33222	MobiFlight.ASCRJ_PRESS_LDG_ELEV_KNOB_DEC                              	ASCRJ CABIN PRESS
+33223	MobiFlight.ASCRJ_PRESS_LDG_ELEV_KNOB_INC                              	ASCRJ CABIN PRESS
+33224	MobiFlight.ASCRJ_HYDR_PUMP_1_SWITCH                                   	ASCRJ HYDR PUMPS
+33225	MobiFlight.ASCRJ_HYDR_PUMP_2_SWITCH                                   	ASCRJ HYDR PUMPS
+33226	MobiFlight.ASCRJ_HYDR_PUMP_3A_SWITCH                                  	ASCRJ HYDR PUMPS
+33227	MobiFlight.ASCRJ_HYDR_PUMP_3B_SWITCH                                  	ASCRJ HYDR PUMPS
+33228	MobiFlight.ASCRJ_TQ_CUTOFF_1_LEVER                                    	ASCRJ THROTTLE QUADRANT
+33229	MobiFlight.ASCRJ_TQ_CUTOFF_2_LEVER                                    	ASCRJ THROTTLE QUADRANT
+33230	MobiFlight.ASCRJ_TQ_THROTTLE_1_POS_IDLE                               	ASCRJ THROTTLE QUADRANT
+33231	MobiFlight.ASCRJ_TQ_THROTTLE_2_POS_IDLE                               	ASCRJ THROTTLE QUADRANT
+33232	MobiFlight.ASCRJ_TQ_THROTTLE_1_POS_SHUTOFF                            	ASCRJ THROTTLE QUADRANT
+33233	MobiFlight.ASCRJ_TQ_THROTTLE_2_POS_SHUTOFF                            	ASCRJ THROTTLE QUADRANT
+33234	MobiFlight.ASCRJ_STAB_TRIM_CH_1_SWITCH                                	ASCRJ TRIMS
+33235	MobiFlight.ASCRJ_STAB_TRIM_CH_2_SWITCH                                	ASCRJ TRIMS
+33236	MobiFlight.ASCRJ_MACH_TRIM_SWITCH                                     	ASCRJ TRIMS
+33237	MobiFlight.ASCRJ_YD1_SWITCH                                           	ASCRJ TRIMS
+33238	MobiFlight.ASCRJ_YD2_SWITCH                                           	ASCRJ TRIMS
+33239	MobiFlight.ASCRJ_YD_DISC_SWITCH                                       	ASCRJ TRIMS
+33240	MobiFlight.A320_Neo_MFD_BTN_CSTR_1                                    	A32X FBW - EFIS CPT
+33241	MobiFlight.A320_Neo_MFD_BTN_WPT_1                                     	A32X FBW - EFIS CPT
+33242	MobiFlight.A320_Neo_MFD_BTN_VORD_1                                    	A32X FBW - EFIS CPT
+33243	MobiFlight.A320_Neo_MFD_BTN_NDB_1                                     	A32X FBW - EFIS CPT
+33244	MobiFlight.A320_Neo_MFD_BTN_ARPT_1                                    	A32X FBW - EFIS CPT
+33245	MobiFlight.A320_Neo_PFD_BTN_LS_1                                      	A32X FBW - EFIS CPT
+33246	MobiFlight.XMLVAR_Baro1_Mode_QFE                                      	A32X FBW - EFIS CPT
+33247	MobiFlight.XMLVAR_Baro1_Mode_QNH                                      	A32X FBW - EFIS CPT
+33248	MobiFlight.XMLVAR_Baro1_Mode_STD                                      	A32X FBW - EFIS CPT
+33249	MobiFlight.A320_Neo_MFD_NAV_MODE_1_LS                                 	A32X FBW - EFIS CPT
+33250	MobiFlight.A320_Neo_MFD_NAV_MODE_1_VOR                                	A32X FBW - EFIS CPT
+33251	MobiFlight.A320_Neo_MFD_NAV_MODE_1_NAV                                	A32X FBW - EFIS CPT
+33252	MobiFlight.A320_Neo_MFD_NAV_MODE_1_ARC                                	A32X FBW - EFIS CPT
+33253	MobiFlight.A320_Neo_MFD_NAV_MODE_1_PLAN                               	A32X FBW - EFIS CPT
+33254	MobiFlight.A320_Neo_MFD_NAV_MODE_1_DEC                                	A32X FBW - EFIS CPT
+33255	MobiFlight.A320_Neo_MFD_NAV_MODE_1_INC                                	A32X FBW - EFIS CPT
+33256	MobiFlight.A320_Neo_MFD_Range_1_10                                    	A32X FBW - EFIS CPT
+33257	MobiFlight.A320_Neo_MFD_Range_1_20                                    	A32X FBW - EFIS CPT
+33258	MobiFlight.A320_Neo_MFD_Range_1_40                                    	A32X FBW - EFIS CPT
+33259	MobiFlight.A320_Neo_MFD_Range_1_80                                    	A32X FBW - EFIS CPT
+33260	MobiFlight.A320_Neo_MFD_Range_1_160                                   	A32X FBW - EFIS CPT
+33261	MobiFlight.A320_Neo_MFD_Range_1_320                                   	A32X FBW - EFIS CPT
+33262	MobiFlight.A320_Neo_MFD_Range_1_DEC                                   	A32X FBW - EFIS CPT
+33263	MobiFlight.A320_Neo_MFD_Range_1_INC                                   	A32X FBW - EFIS CPT
+33264	MobiFlight.XMLVAR_NAV_AID_SWITCH_L1_State_Off                         	A32X FBW - EFIS CPT
+33265	MobiFlight.XMLVAR_NAV_AID_SWITCH_L1_State_ADF                         	A32X FBW - EFIS CPT
+33266	MobiFlight.XMLVAR_NAV_AID_SWITCH_L1_State_VOR                         	A32X FBW - EFIS CPT
+33267	MobiFlight.XMLVAR_NAV_AID_SWITCH_L2_State_Off                         	A32X FBW - EFIS CPT
+33268	MobiFlight.XMLVAR_NAV_AID_SWITCH_L2_State_ADF                         	A32X FBW - EFIS CPT
+33269	MobiFlight.XMLVAR_NAV_AID_SWITCH_L2_State_VOR                         	A32X FBW - EFIS CPT
+33270	MobiFlight.A32NX_AP_MANAGED_SPEED_IN_MACH_TOGGLE                      	A32X FBW - FCU
+33271	MobiFlight.A32NX_TRK_FPA_MODE                                         	A32X FBW - FCU
+33272	MobiFlight.A320NX_LOC                                                 	A32X FBW - FCU
+33273	MobiFlight.A320NX_APPR                                                	A32X FBW - FCU
+33274	MobiFlight.A320NX_METRIC_ALT_TOGGLE                                   	A32X FBW - FCU
+33275	MobiFlight.XMLVAR_Autopilot_Altitude_Increment_100Feet                	A32X FBW - FCU
+33276	MobiFlight.XMLVAR_Autopilot_Altitude_Increment_1000Feet               	A32X FBW - FCU
+33277	MobiFlight.A320_Neo_CDU_MODE_MANAGED_SPEED                            	A32X FBW - FCU
+33278	MobiFlight.A320_Neo_FCU_MODE_MANAGED_SPEED                            	A32X FBW - FCU
+33279	MobiFlight.A320_Neo_CDU_MODE_SELECTED_SPEED                           	A32X FBW - FCU
+33280	MobiFlight.A320_Neo_EXPEDITE_MODE                                     	A32X FBW - FCU
+33281	MobiFlight.A320_Neo_FCU_HDG_PUSH                                      	A32X FBW - FCU
+33282	MobiFlight.A320_Neo_FCU_HDG_PULL                                      	A32X FBW - FCU
+33283	MobiFlight.A320_Neo_FCU_HDG_INC                                       	A32X FBW - FCU
+33284	MobiFlight.A320_Neo_FCU_HDG_DEC                                       	A32X FBW - FCU
+33285	MobiFlight.A320_Neo_FCU_SPEED_INC                                     	A32X FBW - FCU
+33286	MobiFlight.A320_Neo_FCU_SPEED_DEC                                     	A32X FBW - FCU
+33287	MobiFlight.A320_Neo_FCU_VS_INC                                        	A32X FBW - FCU
+33288	MobiFlight.A320_Neo_FCU_VS_DEC                                        	A32X FBW - FCU
+33289	MobiFlight.A320_Neo_FCU_VS_PULL                                       	A32X FBW - FCU
+33290	MobiFlight.A320_Neo_FCU_VS_PUSH                                       	A32X FBW - FCU
+33291	MobiFlight.A320_Neo_FCU_ALT_PULL                                      	A32X FBW - FCU
+33292	MobiFlight.A320_Neo_FCU_ALT_PUSH                                      	A32X FBW - FCU
+33293	MobiFlight.A320_Neo_FCU_SPEED_TOGGLE_SPEED_MACH                       	A32X FBW - FCU
+33294	MobiFlight.A32NX.FCU_SPD_PUSH                                         	A32X FBW - EXPERIMENTAL
+33295	MobiFlight.A32NX.FCU_SPD_PULL                                         	A32X FBW - EXPERIMENTAL
+33296	MobiFlight.A32NX.FCU_SPD_INC                                          	A32X FBW - EXPERIMENTAL
+33297	MobiFlight.A32NX.FCU_SPD_DEC                                          	A32X FBW - EXPERIMENTAL
+33298	MobiFlight.A32NX.FCU_HDG_PUSH                                         	A32X FBW - EXPERIMENTAL
+33299	MobiFlight.A32NX.FCU_HDG_PULL                                         	A32X FBW - EXPERIMENTAL
+33300	MobiFlight.A32NX.FCU_HDG_INC                                          	A32X FBW - EXPERIMENTAL
+33301	MobiFlight.A32NX.FCU_HDG_DEC                                          	A32X FBW - EXPERIMENTAL
+33302	MobiFlight.A32NX.FCU_ALT_PUSH                                         	A32X FBW - EXPERIMENTAL
+33303	MobiFlight.A32NX.FCU_ALT_PULL                                         	A32X FBW - EXPERIMENTAL
+33304	MobiFlight.A32NX.FCU_ALT_INC                                          	A32X FBW - EXPERIMENTAL
+33305	MobiFlight.A32NX.FCU_VS_PUSH                                          	A32X FBW - EXPERIMENTAL
+33306	MobiFlight.A32NX.FCU_VS_PULL                                          	A32X FBW - EXPERIMENTAL
+33307	MobiFlight.A32NX.FCU_VS_INC                                           	A32X FBW - EXPERIMENTAL
+33308	MobiFlight.A32NX.FCU_VS_DEC                                           	A32X FBW - EXPERIMENTAL
+33309	MobiFlight.A32NX.FCU_AP_1_PUSH                                        	A32X FBW - EXPERIMENTAL
+33310	MobiFlight.A32NX.FCU_AP_2_PUSH                                        	A32X FBW - EXPERIMENTAL
+33311	MobiFlight.A32NX.FCU_AP_DISCONNECT_PUSH                               	A32X FBW - EXPERIMENTAL
+33312	MobiFlight.A32NX.FCU_ATHR_PUSH                                        	A32X FBW - EXPERIMENTAL
+33313	MobiFlight.A32NX.FCU_ATHR_DISCONNECT_PUSH                             	A32X FBW - EXPERIMENTAL
+33314	MobiFlight.A32NX.FCU_SPD_MACH_TOGGLE_PUSH                             	A32X FBW - EXPERIMENTAL
+33315	MobiFlight.A32NX.FCU_TRK_FPA_TOGGLE_PUSH                              	A32X FBW - EXPERIMENTAL
+33316	MobiFlight.A32NX.FCU_LOC_PUSH                                         	A32X FBW - EXPERIMENTAL
+33317	MobiFlight.A32NX.FCU_APPR_PUSH                                        	A32X FBW - EXPERIMENTAL
+33318	MobiFlight.A32NX.FCU_EXPED_PUSH                                       	A32X FBW - EXPERIMENTAL
+33319	MobiFlight.XMLVAR_Baro2_Mode_QFE                                      	A32X FBW - EFIS FO
+33320	MobiFlight.XMLVAR_Baro2_Mode_QNH                                      	A32X FBW - EFIS FO
+33321	MobiFlight.XMLVAR_Baro2_Mode_STD                                      	A32X FBW - EFIS FO
+33322	MobiFlight.A320_Neo_MFD_NAV_MODE_2_LS                                 	A32X FBW - EFIS FO
+33323	MobiFlight.A320_Neo_MFD_NAV_MODE_2_VOR                                	A32X FBW - EFIS FO
+33324	MobiFlight.A320_Neo_MFD_NAV_MODE_2_NAV                                	A32X FBW - EFIS FO
+33325	MobiFlight.A320_Neo_MFD_NAV_MODE_2_ARC                                	A32X FBW - EFIS FO
+33326	MobiFlight.A320_Neo_MFD_NAV_MODE_2_PLAN                               	A32X FBW - EFIS FO
+33327	MobiFlight.A320_Neo_MFD_NAV_MODE_2_DEC                                	A32X FBW - EFIS FO
+33328	MobiFlight.A320_Neo_MFD_NAV_MODE_2_INC                                	A32X FBW - EFIS FO
+33329	MobiFlight.A320_Neo_MFD_Range_2_10                                    	A32X FBW - EFIS FO
+33330	MobiFlight.A320_Neo_MFD_Range_2_20                                    	A32X FBW - EFIS FO
+33331	MobiFlight.A320_Neo_MFD_Range_2_40                                    	A32X FBW - EFIS FO
+33332	MobiFlight.A320_Neo_MFD_Range_2_80                                    	A32X FBW - EFIS FO
+33333	MobiFlight.A320_Neo_MFD_Range_2_160                                   	A32X FBW - EFIS FO
+33334	MobiFlight.A320_Neo_MFD_Range_2_320                                   	A32X FBW - EFIS FO
+33335	MobiFlight.A320_Neo_MFD_Range_2_DEC                                   	A32X FBW - EFIS FO
+33336	MobiFlight.A320_Neo_MFD_Range_2_INC                                   	A32X FBW - EFIS FO
+33337	MobiFlight.XMLVAR_NAV_AID_SWITCH_R1_State_Off                         	A32X FBW - EFIS FO
+33338	MobiFlight.XMLVAR_NAV_AID_SWITCH_R1_State_ADF                         	A32X FBW - EFIS FO
+33339	MobiFlight.XMLVAR_NAV_AID_SWITCH_R1_State_VOR                         	A32X FBW - EFIS FO
+33340	MobiFlight.XMLVAR_NAV_AID_SWITCH_R2_State_Off                         	A32X FBW - EFIS FO
+33341	MobiFlight.XMLVAR_NAV_AID_SWITCH_R2_State_ADF                         	A32X FBW - EFIS FO
+33342	MobiFlight.XMLVAR_NAV_AID_SWITCH_R2_State_VOR                         	A32X FBW - EFIS FO
+33343	MobiFlight.A320_Neo_PFD_BTN_LS_2                                      	A32X FBW - EFIS FO
+33344	MobiFlight.A320_Neo_MFD_BTN_CSTR_2                                    	A32X FBW - EFIS FO
+33345	MobiFlight.A320_Neo_MFD_BTN_WPT_2                                     	A32X FBW - EFIS FO
+33346	MobiFlight.A320_Neo_MFD_BTN_VORD_2                                    	A32X FBW - EFIS FO
+33347	MobiFlight.A320_Neo_MFD_BTN_NDB_2                                     	A32X FBW - EFIS FO
+33348	MobiFlight.A320_Neo_MFD_BTN_ARPT_2                                    	A32X FBW - EFIS FO
+33349	MobiFlight.PUSH_AUTOPILOT_CHRONO_L                                    	A32X FBW - MIP
+33350	MobiFlight.A320_Neo_MFD_BTN_TERRONND_1                                	A32X FBW - MIP
+33351	MobiFlight.XMLVAR_Autobrakes_Level_OFF                                	A32X FBW - MIP
+33352	MobiFlight.XMLVAR_Autobrakes_Level_LOW                                	A32X FBW - MIP
+33353	MobiFlight.XMLVAR_Autobrakes_Level_MED                                	A32X FBW - MIP
+33354	MobiFlight.XMLVAR_Autobrakes_Level_MAX                                	A32X FBW - MIP
+33355	MobiFlight.XMLVAR_Baro_Selector_HPA_1_hPa                             	A32X FBW - MIP
+33356	MobiFlight.XMLVAR_Baro_Selector_HPA_1_inHg                            	A32X FBW - MIP
+33357	MobiFlight.A32NX_BRAKE_FAN_BTN_PRESSED                                	A32X FBW - MIP
+33358	MobiFlight.A32NX_AUTOPILOT_MASTER_WARN                                	A32X FBW - MIP
+33359	MobiFlight.A320_Neo_CDU_1_BTN_DIR                                     	A32X FBW - MCDU CPT
+33360	MobiFlight.A320_Neo_CDU_1_BTN_PROG                                    	A32X FBW - MCDU CPT
+33361	MobiFlight.A320_Neo_CDU_1_BTN_PERF                                    	A32X FBW - MCDU CPT
+33362	MobiFlight.A320_Neo_CDU_1_BTN_INIT                                    	A32X FBW - MCDU CPT
+33363	MobiFlight.A320_Neo_CDU_1_BTN_DATA                                    	A32X FBW - MCDU CPT
+33364	MobiFlight.A320_Neo_CDU_1_BTN_FPLN                                    	A32X FBW - MCDU CPT
+33365	MobiFlight.A320_Neo_CDU_1_BTN_RAD                                     	A32X FBW - MCDU CPT
+33366	MobiFlight.A320_Neo_CDU_1_BTN_FUEL                                    	A32X FBW - MCDU CPT
+33367	MobiFlight.A320_Neo_CDU_1_BTN_SEC                                     	A32X FBW - MCDU CPT
+33368	MobiFlight.A320_Neo_CDU_1_BTN_ATC                                     	A32X FBW - MCDU CPT
+33369	MobiFlight.A320_Neo_CDU_1_BTN_MENU                                    	A32X FBW - MCDU CPT
+33370	MobiFlight.A320_Neo_CDU_1_BTN_AIRPORT                                 	A32X FBW - MCDU CPT
+33371	MobiFlight.A320_Neo_CDU_1_BTN_UP                                      	A32X FBW - MCDU CPT
+33372	MobiFlight.A320_Neo_CDU_1_BTN_DOWN                                    	A32X FBW - MCDU CPT
+33373	MobiFlight.A320_Neo_CDU_1_BTN_PREVPAGE                                	A32X FBW - MCDU CPT
+33374	MobiFlight.A320_Neo_CDU_1_BTN_NEXTPAGE                                	A32X FBW - MCDU CPT
+33375	MobiFlight.A320_Neo_CDU_1_BTN_L1                                      	A32X FBW - MCDU CPT
+33376	MobiFlight.A320_Neo_CDU_1_BTN_L2                                      	A32X FBW - MCDU CPT
+33377	MobiFlight.A320_Neo_CDU_1_BTN_L3                                      	A32X FBW - MCDU CPT
+33378	MobiFlight.A320_Neo_CDU_1_BTN_L4                                      	A32X FBW - MCDU CPT
+33379	MobiFlight.A320_Neo_CDU_1_BTN_L5                                      	A32X FBW - MCDU CPT
+33380	MobiFlight.A320_Neo_CDU_1_BTN_L6                                      	A32X FBW - MCDU CPT
+33381	MobiFlight.A320_Neo_CDU_1_BTN_R1                                      	A32X FBW - MCDU CPT
+33382	MobiFlight.A320_Neo_CDU_1_BTN_R2                                      	A32X FBW - MCDU CPT
+33383	MobiFlight.A320_Neo_CDU_1_BTN_R3                                      	A32X FBW - MCDU CPT
+33384	MobiFlight.A320_Neo_CDU_1_BTN_R4                                      	A32X FBW - MCDU CPT
+33385	MobiFlight.A320_Neo_CDU_1_BTN_R5                                      	A32X FBW - MCDU CPT
+33386	MobiFlight.A320_Neo_CDU_1_BTN_R6                                      	A32X FBW - MCDU CPT
+33387	MobiFlight.A320_Neo_CDU_1_BTN_A                                       	A32X FBW - MCDU CPT
+33388	MobiFlight.A320_Neo_CDU_1_BTN_B                                       	A32X FBW - MCDU CPT
+33389	MobiFlight.A320_Neo_CDU_1_BTN_C                                       	A32X FBW - MCDU CPT
+33390	MobiFlight.A320_Neo_CDU_1_BTN_D                                       	A32X FBW - MCDU CPT
+33391	MobiFlight.A320_Neo_CDU_1_BTN_E                                       	A32X FBW - MCDU CPT
+33392	MobiFlight.A320_Neo_CDU_1_BTN_F                                       	A32X FBW - MCDU CPT
+33393	MobiFlight.A320_Neo_CDU_1_BTN_G                                       	A32X FBW - MCDU CPT
+33394	MobiFlight.A320_Neo_CDU_1_BTN_H                                       	A32X FBW - MCDU CPT
+33395	MobiFlight.A320_Neo_CDU_1_BTN_I                                       	A32X FBW - MCDU CPT
+33396	MobiFlight.A320_Neo_CDU_1_BTN_J                                       	A32X FBW - MCDU CPT
+33397	MobiFlight.A320_Neo_CDU_1_BTN_K                                       	A32X FBW - MCDU CPT
+33398	MobiFlight.A320_Neo_CDU_1_BTN_L                                       	A32X FBW - MCDU CPT
+33399	MobiFlight.A320_Neo_CDU_1_BTN_M                                       	A32X FBW - MCDU CPT
+33400	MobiFlight.A320_Neo_CDU_1_BTN_N                                       	A32X FBW - MCDU CPT
+33401	MobiFlight.A320_Neo_CDU_1_BTN_O                                       	A32X FBW - MCDU CPT
+33402	MobiFlight.A320_Neo_CDU_1_BTN_P                                       	A32X FBW - MCDU CPT
+33403	MobiFlight.A320_Neo_CDU_1_BTN_Q                                       	A32X FBW - MCDU CPT
+33404	MobiFlight.A320_Neo_CDU_1_BTN_R                                       	A32X FBW - MCDU CPT
+33405	MobiFlight.A320_Neo_CDU_1_BTN_S                                       	A32X FBW - MCDU CPT
+33406	MobiFlight.A320_Neo_CDU_1_BTN_T                                       	A32X FBW - MCDU CPT
+33407	MobiFlight.A320_Neo_CDU_1_BTN_U                                       	A32X FBW - MCDU CPT
+33408	MobiFlight.A320_Neo_CDU_1_BTN_V                                       	A32X FBW - MCDU CPT
+33409	MobiFlight.A320_Neo_CDU_1_BTN_W                                       	A32X FBW - MCDU CPT
+33410	MobiFlight.A320_Neo_CDU_1_BTN_X                                       	A32X FBW - MCDU CPT
+33411	MobiFlight.A320_Neo_CDU_1_BTN_Y                                       	A32X FBW - MCDU CPT
+33412	MobiFlight.A320_Neo_CDU_1_BTN_Z                                       	A32X FBW - MCDU CPT
+33413	MobiFlight.A320_Neo_CDU_1_BTN_1                                       	A32X FBW - MCDU CPT
+33414	MobiFlight.A320_Neo_CDU_1_BTN_2                                       	A32X FBW - MCDU CPT
+33415	MobiFlight.A320_Neo_CDU_1_BTN_3                                       	A32X FBW - MCDU CPT
+33416	MobiFlight.A320_Neo_CDU_1_BTN_4                                       	A32X FBW - MCDU CPT
+33417	MobiFlight.A320_Neo_CDU_1_BTN_5                                       	A32X FBW - MCDU CPT
+33418	MobiFlight.A320_Neo_CDU_1_BTN_6                                       	A32X FBW - MCDU CPT
+33419	MobiFlight.A320_Neo_CDU_1_BTN_7                                       	A32X FBW - MCDU CPT
+33420	MobiFlight.A320_Neo_CDU_1_BTN_8                                       	A32X FBW - MCDU CPT
+33421	MobiFlight.A320_Neo_CDU_1_BTN_9                                       	A32X FBW - MCDU CPT
+33422	MobiFlight.A320_Neo_CDU_1_BTN_0                                       	A32X FBW - MCDU CPT
+33423	MobiFlight.A320_Neo_CDU_1_BTN_DOT                                     	A32X FBW - MCDU CPT
+33424	MobiFlight.A320_Neo_CDU_1_BTN_PLUSMINUS                               	A32X FBW - MCDU CPT
+33425	MobiFlight.A320_Neo_CDU_1_BTN_SP                                      	A32X FBW - MCDU CPT
+33426	MobiFlight.A320_Neo_CDU_1_BTN_DIV                                     	A32X FBW - MCDU CPT
+33427	MobiFlight.A320_Neo_CDU_1_BTN_OVFY                                    	A32X FBW - MCDU CPT
+33428	MobiFlight.A320_Neo_CDU_1_BTN_CLR                                     	A32X FBW - MCDU CPT
+33429	MobiFlight.A320_Neo_CDU_2_BTN_DIR                                     	A32X FBW - MCDU FO
+33430	MobiFlight.A320_Neo_CDU_2_BTN_PROG                                    	A32X FBW - MCDU FO
+33431	MobiFlight.A320_Neo_CDU_2_BTN_PERF                                    	A32X FBW - MCDU FO
+33432	MobiFlight.A320_Neo_CDU_2_BTN_INIT                                    	A32X FBW - MCDU FO
+33433	MobiFlight.A320_Neo_CDU_2_BTN_DATA                                    	A32X FBW - MCDU FO
+33434	MobiFlight.A320_Neo_CDU_2_BTN_FPLN                                    	A32X FBW - MCDU FO
+33435	MobiFlight.A320_Neo_CDU_2_BTN_RAD                                     	A32X FBW - MCDU FO
+33436	MobiFlight.A320_Neo_CDU_2_BTN_FUEL                                    	A32X FBW - MCDU FO
+33437	MobiFlight.A320_Neo_CDU_2_BTN_SEC                                     	A32X FBW - MCDU FO
+33438	MobiFlight.A320_Neo_CDU_2_BTN_ATC                                     	A32X FBW - MCDU FO
+33439	MobiFlight.A320_Neo_CDU_2_BTN_MENU                                    	A32X FBW - MCDU FO
+33440	MobiFlight.A320_Neo_CDU_2_BTN_AIRPORT                                 	A32X FBW - MCDU FO
+33441	MobiFlight.A320_Neo_CDU_2_BTN_UP                                      	A32X FBW - MCDU FO
+33442	MobiFlight.A320_Neo_CDU_2_BTN_DOWN                                    	A32X FBW - MCDU FO
+33443	MobiFlight.A320_Neo_CDU_2_BTN_PREVPAGE                                	A32X FBW - MCDU FO
+33444	MobiFlight.A320_Neo_CDU_2_BTN_NEXTPAGE                                	A32X FBW - MCDU FO
+33445	MobiFlight.A320_Neo_CDU_2_BTN_L1                                      	A32X FBW - MCDU FO
+33446	MobiFlight.A320_Neo_CDU_2_BTN_L2                                      	A32X FBW - MCDU FO
+33447	MobiFlight.A320_Neo_CDU_2_BTN_L3                                      	A32X FBW - MCDU FO
+33448	MobiFlight.A320_Neo_CDU_2_BTN_L4                                      	A32X FBW - MCDU FO
+33449	MobiFlight.A320_Neo_CDU_2_BTN_L5                                      	A32X FBW - MCDU FO
+33450	MobiFlight.A320_Neo_CDU_2_BTN_L6                                      	A32X FBW - MCDU FO
+33451	MobiFlight.A320_Neo_CDU_2_BTN_R1                                      	A32X FBW - MCDU FO
+33452	MobiFlight.A320_Neo_CDU_2_BTN_R2                                      	A32X FBW - MCDU FO
+33453	MobiFlight.A320_Neo_CDU_2_BTN_R3                                      	A32X FBW - MCDU FO
+33454	MobiFlight.A320_Neo_CDU_2_BTN_R4                                      	A32X FBW - MCDU FO
+33455	MobiFlight.A320_Neo_CDU_2_BTN_R5                                      	A32X FBW - MCDU FO
+33456	MobiFlight.A320_Neo_CDU_2_BTN_R6                                      	A32X FBW - MCDU FO
+33457	MobiFlight.A320_Neo_CDU_2_BTN_A                                       	A32X FBW - MCDU FO
+33458	MobiFlight.A320_Neo_CDU_2_BTN_B                                       	A32X FBW - MCDU FO
+33459	MobiFlight.A320_Neo_CDU_2_BTN_C                                       	A32X FBW - MCDU FO
+33460	MobiFlight.A320_Neo_CDU_2_BTN_D                                       	A32X FBW - MCDU FO
+33461	MobiFlight.A320_Neo_CDU_2_BTN_E                                       	A32X FBW - MCDU FO
+33462	MobiFlight.A320_Neo_CDU_2_BTN_F                                       	A32X FBW - MCDU FO
+33463	MobiFlight.A320_Neo_CDU_2_BTN_G                                       	A32X FBW - MCDU FO
+33464	MobiFlight.A320_Neo_CDU_2_BTN_H                                       	A32X FBW - MCDU FO
+33465	MobiFlight.A320_Neo_CDU_2_BTN_I                                       	A32X FBW - MCDU FO
+33466	MobiFlight.A320_Neo_CDU_2_BTN_J                                       	A32X FBW - MCDU FO
+33467	MobiFlight.A320_Neo_CDU_2_BTN_K                                       	A32X FBW - MCDU FO
+33468	MobiFlight.A320_Neo_CDU_2_BTN_L                                       	A32X FBW - MCDU FO
+33469	MobiFlight.A320_Neo_CDU_2_BTN_M                                       	A32X FBW - MCDU FO
+33470	MobiFlight.A320_Neo_CDU_2_BTN_N                                       	A32X FBW - MCDU FO
+33471	MobiFlight.A320_Neo_CDU_2_BTN_O                                       	A32X FBW - MCDU FO
+33472	MobiFlight.A320_Neo_CDU_2_BTN_P                                       	A32X FBW - MCDU FO
+33473	MobiFlight.A320_Neo_CDU_2_BTN_Q                                       	A32X FBW - MCDU FO
+33474	MobiFlight.A320_Neo_CDU_2_BTN_R                                       	A32X FBW - MCDU FO
+33475	MobiFlight.A320_Neo_CDU_2_BTN_S                                       	A32X FBW - MCDU FO
+33476	MobiFlight.A320_Neo_CDU_2_BTN_T                                       	A32X FBW - MCDU FO
+33477	MobiFlight.A320_Neo_CDU_2_BTN_U                                       	A32X FBW - MCDU FO
+33478	MobiFlight.A320_Neo_CDU_2_BTN_V                                       	A32X FBW - MCDU FO
+33479	MobiFlight.A320_Neo_CDU_2_BTN_W                                       	A32X FBW - MCDU FO
+33480	MobiFlight.A320_Neo_CDU_2_BTN_X                                       	A32X FBW - MCDU FO
+33481	MobiFlight.A320_Neo_CDU_2_BTN_Y                                       	A32X FBW - MCDU FO
+33482	MobiFlight.A320_Neo_CDU_2_BTN_Z                                       	A32X FBW - MCDU FO
+33483	MobiFlight.A320_Neo_CDU_2_BTN_1                                       	A32X FBW - MCDU FO
+33484	MobiFlight.A320_Neo_CDU_2_BTN_2                                       	A32X FBW - MCDU FO
+33485	MobiFlight.A320_Neo_CDU_2_BTN_3                                       	A32X FBW - MCDU FO
+33486	MobiFlight.A320_Neo_CDU_2_BTN_4                                       	A32X FBW - MCDU FO
+33487	MobiFlight.A320_Neo_CDU_2_BTN_5                                       	A32X FBW - MCDU FO
+33488	MobiFlight.A320_Neo_CDU_2_BTN_6                                       	A32X FBW - MCDU FO
+33489	MobiFlight.A320_Neo_CDU_2_BTN_7                                       	A32X FBW - MCDU FO
+33490	MobiFlight.A320_Neo_CDU_2_BTN_8                                       	A32X FBW - MCDU FO
+33491	MobiFlight.A320_Neo_CDU_2_BTN_9                                       	A32X FBW - MCDU FO
+33492	MobiFlight.A320_Neo_CDU_2_BTN_0                                       	A32X FBW - MCDU FO
+33493	MobiFlight.A320_Neo_CDU_2_BTN_DOT                                     	A32X FBW - MCDU FO
+33494	MobiFlight.A320_Neo_CDU_2_BTN_PLUSMINUS                               	A32X FBW - MCDU FO
+33495	MobiFlight.A320_Neo_CDU_2_BTN_SP                                      	A32X FBW - MCDU FO
+33496	MobiFlight.A320_Neo_CDU_2_BTN_DIV                                     	A32X FBW - MCDU FO
+33497	MobiFlight.A320_Neo_CDU_2_BTN_OVFY                                    	A32X FBW - MCDU FO
+33498	MobiFlight.A320_Neo_CDU_2_BTN_CLR                                     	A32X FBW - MCDU FO
+33499	MobiFlight.A320_Neo_EICAS_2_ECAM_CHANGE_PAGE_ENG                      	A32X FBW - ECAM
+33500	MobiFlight.A320_Neo_EICAS_2_ECAM_CHANGE_PAGE_BLEED                    	A32X FBW - ECAM
+33501	MobiFlight.A320_Neo_EICAS_2_ECAM_CHANGE_PAGE_PRESS                    	A32X FBW - ECAM
+33502	MobiFlight.A320_Neo_EICAS_2_ECAM_CHANGE_PAGE_ELEC                     	A32X FBW - ECAM
+33503	MobiFlight.A320_Neo_EICAS_2_ECAM_CHANGE_PAGE_HYD                      	A32X FBW - ECAM
+33504	MobiFlight.A320_Neo_EICAS_2_ECAM_CHANGE_PAGE_FUEL                     	A32X FBW - ECAM
+33505	MobiFlight.A320_Neo_EICAS_2_ECAM_CHANGE_PAGE_APU                      	A32X FBW - ECAM
+33506	MobiFlight.A320_Neo_EICAS_2_ECAM_CHANGE_PAGE_COND                     	A32X FBW - ECAM
+33507	MobiFlight.A320_Neo_EICAS_2_ECAM_CHANGE_PAGE_DOOR                     	A32X FBW - ECAM
+33508	MobiFlight.A320_Neo_EICAS_2_ECAM_CHANGE_PAGE_WHEEL                    	A32X FBW - ECAM
+33509	MobiFlight.A320_Neo_EICAS_2_ECAM_CHANGE_PAGE_FTCL                     	A32X FBW - ECAM
+33510	MobiFlight.A320_Neo_EICAS_2_ECAM_CHANGE_PAGE_STS                      	A32X FBW - ECAM
+33511	MobiFlight.A32NX_BTN_RCL_PRESSED                                      	A32X FBW - ECAM
+33512	MobiFlight.A32NX_ECAM_ALL_Push_IsDown_RELEASED                        	A32X FBW - ECAM
+33513	MobiFlight.A32NX_ECAM_ALL_Push_IsDown_PRESSED                         	A32X FBW - ECAM
+33514	MobiFlight.A32NX_BTN_TOCONFIG_RELEASED                                	A32X FBW - ECAM
+33515	MobiFlight.A32NX_BTN_TOCONFIG_PRESSED                                 	A32X FBW - ECAM
+33516	MobiFlight.A32NX_BTN_CLR_RELEASED                                     	A32X FBW - ECAM
+33517	MobiFlight.A32NX_BTN_CLR_PRESSED                                      	A32X FBW - ECAM
+33518	MobiFlight.A320_Neo_ATC_BTN_1                                         	A32X FBW - ATC-TCAS
+33519	MobiFlight.A320_Neo_ATC_BTN_2                                         	A32X FBW - ATC-TCAS
+33520	MobiFlight.A320_Neo_ATC_BTN_3                                         	A32X FBW - ATC-TCAS
+33521	MobiFlight.A320_Neo_ATC_BTN_4                                         	A32X FBW - ATC-TCAS
+33522	MobiFlight.A320_Neo_ATC_BTN_5                                         	A32X FBW - ATC-TCAS
+33523	MobiFlight.A320_Neo_ATC_BTN_6                                         	A32X FBW - ATC-TCAS
+33524	MobiFlight.A320_Neo_ATC_BTN_7                                         	A32X FBW - ATC-TCAS
+33525	MobiFlight.A320_Neo_ATC_BTN_8                                         	A32X FBW - ATC-TCAS
+33526	MobiFlight.A320_Neo_ATC_BTN_9                                         	A32X FBW - ATC-TCAS
+33527	MobiFlight.A320_Neo_ATC_BTN_0                                         	A32X FBW - ATC-TCAS
+33528	MobiFlight.A320_Neo_ATC_BTN_CLR                                       	A32X FBW - ATC-TCAS
+33529	MobiFlight.A320_Neo_ATC_BTN_IDENT                                     	A32X FBW - ATC-TCAS
+33530	MobiFlight.A320_Neo_FBW_BTN_L_VHF1                                    	A32X FBW - RADIO
+33531	MobiFlight.A320_Neo_FBW_BTN_L_VHF2                                    	A32X FBW - RADIO
+33532	MobiFlight.A320_Neo_FBW_BTN_L_VHF3                                    	A32X FBW - RADIO
+33533	MobiFlight.A320_Neo_FBW_BTN_L_HF1                                     	A32X FBW - RADIO
+33534	MobiFlight.A320_Neo_FBW_BTN_L_HF2                                     	A32X FBW - RADIO
+33535	MobiFlight.A320_Neo_FBW_BTN_L_AM                                      	A32X FBW - RADIO
+33536	MobiFlight.A320_Neo_FBW_BTN_L_NAV                                     	A32X FBW - RADIO
+33537	MobiFlight.A320_Neo_FBW_BTN_L_VOR                                     	A32X FBW - RADIO
+33538	MobiFlight.A320_Neo_FBW_BTN_L_ILS                                     	A32X FBW - RADIO
+33539	MobiFlight.A320_Neo_FBW_BTN_L_MLS                                     	A32X FBW - RADIO
+33540	MobiFlight.A320_Neo_FBW_BTN_L_ADF                                     	A32X FBW - RADIO
+33541	MobiFlight.A320_Neo_FBW_BTN_L_BFO                                     	A32X FBW - RADIO
+33542	MobiFlight.A32NX_RMP_L_TRANSFER_BUTTON_PRESSED                        	A32X FBW - RADIO
+33543	MobiFlight.A32NX_RMP_L_OUTER_KNOB_TURNED_CLOCKWISE                    	A32X FBW - RADIO
+33544	MobiFlight.A32NX_RMP_L_OUTER_KNOB_TURNED_ANTICLOCKWISE                	A32X FBW - RADIO
+33545	MobiFlight.A32NX_RMP_L_INNER_KNOB_TURNED_CLOCKWISE                    	A32X FBW - RADIO
+33546	MobiFlight.A32NX_RMP_L_INNER_KNOB_TURNED_ANTICLOCKWISE                	A32X FBW - RADIO
+33547	MobiFlight.A320_Neo_FBW_SWITCH_L_TOGGLE                               	A32X FBW - RADIO
+33548	MobiFlight.A320_Neo_AIRCOND_LVL_1_OFF                                 	A32X FBW - AIR COND
+33549	MobiFlight.A320_Neo_AIRCOND_LVL_1_25                                  	A32X FBW - AIR COND
+33550	MobiFlight.A320_Neo_AIRCOND_LVL_1_50                                  	A32X FBW - AIR COND
+33551	MobiFlight.A320_Neo_AIRCOND_LVL_1_75                                  	A32X FBW - AIR COND
+33552	MobiFlight.A320_Neo_AIRCOND_LVL_1_100                                 	A32X FBW - AIR COND
+33553	MobiFlight.A320_Neo_AIRCOND_LVL_2_OFF                                 	A32X FBW - AIR COND
+33554	MobiFlight.A320_Neo_AIRCOND_LVL_2_25                                  	A32X FBW - AIR COND
+33555	MobiFlight.A320_Neo_AIRCOND_LVL_2_50                                  	A32X FBW - AIR COND
+33556	MobiFlight.A320_Neo_AIRCOND_LVL_2_75                                  	A32X FBW - AIR COND
+33557	MobiFlight.A320_Neo_AIRCOND_LVL_2_100                                 	A32X FBW - AIR COND
+33558	MobiFlight.A320_Neo_AIRCOND_LVL_3_OFF                                 	A32X FBW - AIR COND
+33559	MobiFlight.A320_Neo_AIRCOND_LVL_3_25                                  	A32X FBW - AIR COND
+33560	MobiFlight.A320_Neo_AIRCOND_LVL_3_50                                  	A32X FBW - AIR COND
+33561	MobiFlight.A320_Neo_AIRCOND_LVL_3_75                                  	A32X FBW - AIR COND
+33562	MobiFlight.A320_Neo_AIRCOND_LVL_3_100                                 	A32X FBW - AIR COND
+33563	MobiFlight.A32NX_AIRCOND_PACK1_TOGGLE_OFF                             	A32X FBW - AIR COND
+33564	MobiFlight.A32NX_AIRCOND_PACK1_TOGGLE_ON                              	A32X FBW - AIR COND
+33565	MobiFlight.A32NX_AIRCOND_PACK2_TOGGLE_OFF                             	A32X FBW - AIR COND
+33566	MobiFlight.A32NX_AIRCOND_PACK2_TOGGLE_ON                              	A32X FBW - AIR COND
+33567	MobiFlight.A32NX_AIRCOND_HOTAIR_TOGGLE_OFF                            	A32X FBW - AIR COND
+33568	MobiFlight.A32NX_AIRCOND_HOTAIR_TOGGLE_ON                             	A32X FBW - AIR COND
+33569	MobiFlight.A32NX_KNOB_OVHD_AIRCOND_PACKFLOW_Position_LOW              	A32X FBW - AIR COND
+33570	MobiFlight.A32NX_KNOB_OVHD_AIRCOND_PACKFLOW_Position_MED              	A32X FBW - AIR COND
+33571	MobiFlight.A32NX_KNOB_OVHD_AIRCOND_PACKFLOW_Position_HIGH             	A32X FBW - AIR COND
+33572	MobiFlight.A32NX_APU_BLEED_OFF_OFF                                    	A32X FBW - AIR COND
+33573	MobiFlight.A32NX_APU_BLEED_ON_ON                                      	A32X FBW - AIR COND
+33574	MobiFlight.A32NX_KNOB_OVHD_AIRCOND_XBLEED_Position_SHUT               	A32X FBW - AIR COND
+33575	MobiFlight.A32NX_KNOB_OVHD_AIRCOND_XBLEED_Position_AUTO               	A32X FBW - AIR COND
+33576	MobiFlight.A32NX_KNOB_OVHD_AIRCOND_XBLEED_Position_OPEN               	A32X FBW - AIR COND
+33577	MobiFlight.A32NX_AIRCOND_RAMAIR_TOGGLE_OFF                            	A32X FBW - AIR COND
+33578	MobiFlight.A32NX_AIRCOND_RAMAIR_TOGGLE_ON                             	A32X FBW - AIR COND
+33579	MobiFlight.XMLVAR_Momentary_PUSH_OVHD_AIRCOND_ENG1BLEED_Pressed_RELEAS	A32X FBW - AIR COND
+33580	MobiFlight.XMLVAR_Momentary_PUSH_OVHD_AIRCOND_ENG1BLEED_Pressed_PRESSE	A32X FBW - AIR COND
+33581	MobiFlight.XMLVAR_Momentary_PUSH_OVHD_AIRCOND_ENG2BLEED_Pressed_RELEAS	A32X FBW - AIR COND
+33582	MobiFlight.XMLVAR_Momentary_PUSH_OVHD_AIRCOND_ENG2BLEED_Pressed_PRESSE	A32X FBW - AIR COND
+33583	MobiFlight.A32NX_ELEC_COMMERCIAL_TOGGLE_OFF                           	A32X FBW - ELECTRICAL
+33584	MobiFlight.A32NX_ELEC_COMMERCIAL_TOGGLE_ON                            	A32X FBW - ELECTRICAL
+33585	MobiFlight.A32NX_ELEC_GALYCAB_TOGGLE_OFF                              	A32X FBW - ELECTRICAL
+33586	MobiFlight.A32NX_ELEC_GALYCAB_TOGGLE_AUTO                             	A32X FBW - ELECTRICAL
+33587	MobiFlight.XMLVAR_Momentary_PUSH_OVHD_ELEC_GEN1_Pressed_RELEASED      	A32X FBW - ELECTRICAL
+33588	MobiFlight.XMLVAR_Momentary_PUSH_OVHD_ELEC_GEN1_Pressed_PRESSED       	A32X FBW - ELECTRICAL
+33589	MobiFlight.XMLVAR_Momentary_PUSH_OVHD_ELEC_GEN2_Pressed_RELEASED      	A32X FBW - ELECTRICAL
+33590	MobiFlight.XMLVAR_Momentary_PUSH_OVHD_ELEC_GEN2_Pressed_PRESSED       	A32X FBW - ELECTRICAL
+33591	MobiFlight.A32NX_ELEC_IDG1_FAULT_RELEASED                             	A32X FBW - ELECTRICAL
+33592	MobiFlight.A32NX_ELEC_IDG1_FAULT_PRESSED                              	A32X FBW - ELECTRICAL
+33593	MobiFlight.A32NX_ELEC_IDG2_FAULT_RELEASED                             	A32X FBW - ELECTRICAL
+33594	MobiFlight.A32NX_ELEC_IDG2_FAULT_PRESSED                              	A32X FBW - ELECTRICAL
+33595	MobiFlight.XMLVAR_Momentary_PUSH_OVHD_ELEC_APUGEN_Pressed_RELEASED    	A32X FBW - ELECTRICAL
+33596	MobiFlight.XMLVAR_Momentary_PUSH_OVHD_ELEC_APUGEN_Pressed_PRESSED     	A32X FBW - ELECTRICAL
+33597	MobiFlight.A32NX_ELEC_BUSTIE_TOGGLE_OFF                               	A32X FBW - ELECTRICAL
+33598	MobiFlight.A32NX_ELEC_BUSTIE_TOGGLE_AUTO                              	A32X FBW - ELECTRICAL
+33599	MobiFlight.ACPowerAvailable_RELEASED                                  	A32X FBW - ELECTRICAL
+33600	MobiFlight.ACPowerAvailable_PRESSED                                   	A32X FBW - ELECTRICAL
+33601	MobiFlight.A32NX_ELEC_ACESSFEED_TOGGLE_ON                             	A32X FBW - ELECTRICAL
+33602	MobiFlight.A32NX_ELEC_ACESSFEED_TOGGLE_ALTN                           	A32X FBW - ELECTRICAL
+33603	MobiFlight.XMLVAR_Momentary_PUSH_OVHD_ELEC_BAT1_Pressed_RELEASED      	A32X FBW - ELECTRICAL
+33604	MobiFlight.XMLVAR_Momentary_PUSH_OVHD_ELEC_BAT1_Pressed_PRESSED       	A32X FBW - ELECTRICAL
+33605	MobiFlight.XMLVAR_Momentary_PUSH_OVHD_ELEC_BAT2_Pressed_RELEASED      	A32X FBW - ELECTRICAL
+33606	MobiFlight.XMLVAR_Momentary_PUSH_OVHD_ELEC_BAT2_Pressed_PRESSED       	A32X FBW - ELECTRICAL
+33607	MobiFlight.XMLVAR_Momentary_PUSH_OVHD_ANTIICE_ENG1_Pressed_RELEASED   	A32X FBW - ANTI-ICE
+33608	MobiFlight.XMLVAR_Momentary_PUSH_OVHD_ANTIICE_ENG1_Pressed_PRESSED    	A32X FBW - ANTI-ICE
+33609	MobiFlight.XMLVAR_Momentary_PUSH_OVHD_ANTIICE_ENG2_Pressed_RELEASED   	A32X FBW - ANTI-ICE
+33610	MobiFlight.XMLVAR_Momentary_PUSH_OVHD_ANTIICE_ENG2_Pressed_PRESSED    	A32X FBW - ANTI-ICE
+33611	MobiFlight.XMLVAR_Momentary_PUSH_OVHD_ANTIICE_WING_Pressed_RELEASED   	A32X FBW - ANTI-ICE
+33612	MobiFlight.XMLVAR_Momentary_PUSH_OVHD_ANTIICE_WING_Pressed_PRESSED    	A32X FBW - ANTI-ICE
+33613	MobiFlight.A32NX_MAN_PITOT_HEAT_OFF                                   	A32X FBW - ANTI-ICE
+33614	MobiFlight.A32NX_MAN_PITOT_HEAT_ON                                    	A32X FBW - ANTI-ICE
+33615	MobiFlight.A32NX_OVHD_COCKPITDOORVIDEO_TOGGLE_OFF                     	A32X FBW - COCKPIT COMMUNICATION
+33616	MobiFlight.A32NX_OVHD_COCKPITDOORVIDEO_TOGGLE_ON                      	A32X FBW - COCKPIT COMMUNICATION
+33617	MobiFlight.A32NX_ADIRS_KNOB_1_OFF                                     	A32X FBW - ADIRS
+33618	MobiFlight.A32NX_ADIRS_KNOB_1_NAV                                     	A32X FBW - ADIRS
+33619	MobiFlight.A32NX_ADIRS_KNOB_1_ATT                                     	A32X FBW - ADIRS
+33620	MobiFlight.A32NX_ADIRS_KNOB_2_OFF                                     	A32X FBW - ADIRS
+33621	MobiFlight.A32NX_ADIRS_KNOB_2_NAV                                     	A32X FBW - ADIRS
+33622	MobiFlight.A32NX_ADIRS_KNOB_2_ATT                                     	A32X FBW - ADIRS
+33623	MobiFlight.A32NX_ADIRS_KNOB_3_OFF                                     	A32X FBW - ADIRS
+33624	MobiFlight.A32NX_ADIRS_KNOB_3_NAV                                     	A32X FBW - ADIRS
+33625	MobiFlight.A32NX_ADIRS_KNOB_3_ATT                                     	A32X FBW - ADIRS
+33626	MobiFlight.XMLVAR_Momentary_PUSH_OVHD_FLTCTL_ELAC_Pressed_RELEASED    	A32X FBW - FLT CTL (PILOT)
+33627	MobiFlight.XMLVAR_Momentary_PUSH_OVHD_FLTCTL_ELAC_Pressed_PRESSED     	A32X FBW - FLT CTL (PILOT)
+33628	MobiFlight.XMLVAR_Momentary_PUSH_OVHD_FLTCTL_SEC_Pressed_RELEASED     	A32X FBW - FLT CTL (PILOT)
+33629	MobiFlight.XMLVAR_Momentary_PUSH_OVHD_FLTCTL_SEC_Pressed_PRESSED      	A32X FBW - FLT CTL (PILOT)
+33630	MobiFlight.XMLVAR_Momentary_PUSH_OVHD_FLTCTL_FAC_Pressed_RELEASED     	A32X FBW - FLT CTL (PILOT)
+33631	MobiFlight.XMLVAR_Momentary_PUSH_OVHD_FLTCTL_FAC_Pressed_PRESSED      	A32X FBW - FLT CTL (PILOT)
+33632	MobiFlight.XMLVAR_Momentary_PUSH_OVHD_FLTCTL_ELAC2_Pressed_RELEASED   	A32X FBW - FLT CTL (CO-PILOT)
+33633	MobiFlight.XMLVAR_Momentary_PUSH_OVHD_FLTCTL_ELAC2_Pressed_PRESSED    	A32X FBW - FLT CTL (CO-PILOT)
+33634	MobiFlight.XMLVAR_Momentary_PUSH_OVHD_FLTCTL_SEC2_Pressed_RELEASED    	A32X FBW - FLT CTL (CO-PILOT)
+33635	MobiFlight.XMLVAR_Momentary_PUSH_OVHD_FLTCTL_SEC2_Pressed_PRESSED     	A32X FBW - FLT CTL (CO-PILOT)
+33636	MobiFlight.XMLVAR_Momentary_PUSH_OVHD_FLTCTL_SEC3_Pressed_RELEASED    	A32X FBW - FLT CTL (CO-PILOT)
+33637	MobiFlight.XMLVAR_Momentary_PUSH_OVHD_FLTCTL_SEC3_Pressed_PRESSED     	A32X FBW - FLT CTL (CO-PILOT)
+33638	MobiFlight.XMLVAR_Momentary_PUSH_OVHD_FLTCTL_FAC2_Pressed_RELEASED    	A32X FBW - FLT CTL (CO-PILOT)
+33639	MobiFlight.XMLVAR_Momentary_PUSH_OVHD_FLTCTL_FAC2_Pressed_PRESSED     	A32X FBW - FLT CTL (CO-PILOT)
+33640	MobiFlight.PUSH_OVHD_EVAC_HORN_OFF                                    	A32X FBW - EVAC
+33641	MobiFlight.PUSH_OVHD_EVAC_HORN_ON                                     	A32X FBW - EVAC
+33642	MobiFlight.A32NX_EVAC_CAPT_TOGGLE_CAPT                                	A32X FBW - EVAC
+33643	MobiFlight.A32NX_EVAC_CAPT_TOGGLE_CAPT_AND_PURS                       	A32X FBW - EVAC
+33644	MobiFlight.A32NX_EVAC_COMMAND_TOGGLE_OFF                              	A32X FBW - EVAC
+33645	MobiFlight.A32NX_EVAC_COMMAND_TOGGLE_ON                               	A32X FBW - EVAC
+33646	MobiFlight.A32NX_EMERELECPWR_EMERTESTLOCK_TOGGLE_OFF                  	A32X FBW - EMER ELEC PWR
+33647	MobiFlight.A32NX_EMERELECPWR_EMERTESTLOCK_TOGGLE_ON                   	A32X FBW - EMER ELEC PWR
+33648	MobiFlight.A32NX_EMERELECPWR_GEN1_TOGGLE_OFF                          	A32X FBW - EMER ELEC PWR
+33649	MobiFlight.A32NX_EMERELECPWR_GEN1_TOGGLE_ON                           	A32X FBW - EMER ELEC PWR
+33650	MobiFlight.A32NX_EMERELECPWR_MANONLOCK_TOGGLE_AUTO                    	A32X FBW - EMER ELEC PWR
+33651	MobiFlight.A32NX_EMERELECPWR_MANONLOCK_TOGGLE_MAN                     	A32X FBW - EMER ELEC PWR
+33652	MobiFlight.A32NX_GPWS_TERR_OFF_OFF                                    	A32X FBW - GPWS
+33653	MobiFlight.A32NX_GPWS_TERR_OFF_ON                                     	A32X FBW - GPWS
+33654	MobiFlight.A32NX_GPWS_SYS_OFF_OFF                                     	A32X FBW - GPWS
+33655	MobiFlight.A32NX_GPWS_SYS_OFF_ON                                      	A32X FBW - GPWS
+33656	MobiFlight.A32NX_GPWS_GS_OFF_OFF                                      	A32X FBW - GPWS
+33657	MobiFlight.A32NX_GPWS_GS_OFF_ON                                       	A32X FBW - GPWS
+33658	MobiFlight.A32NX_GPWS_FLAP_OFF_OFF                                    	A32X FBW - GPWS
+33659	MobiFlight.A32NX_GPWS_FLAP_OFF_ON                                     	A32X FBW - GPWS
+33660	MobiFlight.A32NX_GPWS_FLAPS3_OFF                                      	A32X FBW - GPWS
+33661	MobiFlight.A32NX_GPWS_FLAPS3_ON                                       	A32X FBW - GPWS
+33662	MobiFlight.PUSH_OVHD_OXYGEN_CREW_OFF                                  	A32X FBW - OXYGEN
+33663	MobiFlight.PUSH_OVHD_OXYGEN_CREW_ON                                   	A32X FBW - OXYGEN
+33664	MobiFlight.PUSH_OVHD_CALLS_MECH_OFF                                   	A32X FBW - CALLS
+33665	MobiFlight.PUSH_OVHD_CALLS_MECH_ON                                    	A32X FBW - CALLS
+33666	MobiFlight.PUSH_OVHD_CALLS_ALL_OFF                                    	A32X FBW - CALLS
+33667	MobiFlight.PUSH_OVHD_CALLS_ALL_ON                                     	A32X FBW - CALLS
+33668	MobiFlight.PUSH_OVHD_CALLS_FWD_OFF                                    	A32X FBW - CALLS
+33669	MobiFlight.PUSH_OVHD_CALLS_FWD_ON                                     	A32X FBW - CALLS
+33670	MobiFlight.PUSH_OVHD_CALLS_AFT_OFF                                    	A32X FBW - CALLS
+33671	MobiFlight.PUSH_OVHD_CALLS_AFT_ON                                     	A32X FBW - CALLS
+33672	MobiFlight.A32NX_CALLS_EMER_ON_OFF                                    	A32X FBW - CALLS
+33673	MobiFlight.A32NX_CALLS_EMER_ON_ON                                     	A32X FBW - CALLS
+33674	MobiFlight.XMLVAR_Momentary_PUSH_OVHD_APU_MASTERSW_Pressed_RELEASED   	A32X FBW - OH LIGHTS
+33675	MobiFlight.XMLVAR_Momentary_PUSH_OVHD_APU_MASTERSW_Pressed_PRESSED    	A32X FBW - OH LIGHTS
+33676	MobiFlight.A32NX_APU_MASTER_SW                                        	A32X FBW - OH LIGHTS
+33677	MobiFlight.A32NX_APU_START                                            	A32X FBW - OH LIGHTS
+33678	MobiFlight.SEATBELT_SWITCH                                            	A32X FBW - OH LIGHTS
+33679	MobiFlight.NO_SMOKING_ON                                              	A32X FBW - OH LIGHTS
+33680	MobiFlight.NO_SMOKING_AUTO                                            	A32X FBW - OH LIGHTS
+33681	MobiFlight.NO_SMOKING_OFF                                             	A32X FBW - OH LIGHTS
+33682	MobiFlight.STBY_COMPASS_LIGHT_TOGGLE                                  	A32X FBW - OH LIGHTS
+33683	MobiFlight.STBY_COMPASS_LIGHT_OFF                                     	A32X FBW - OH LIGHTS
+33684	MobiFlight.DOME_LIGHT_BRT                                             	A32X FBW - OH LIGHTS
+33685	MobiFlight.DOME_LIGHT_DIM1                                            	A32X FBW - OH LIGHTS
+33686	MobiFlight.DOME_LIGHT_DIM2                                            	A32X FBW - OH LIGHTS
+33687	MobiFlight.DOME_LIGHT_OFF                                             	A32X FBW - OH LIGHTS
+33688	MobiFlight.EMER_EXIT_ON                                               	A32X FBW - OH LIGHTS
+33689	MobiFlight.EMER_EXIT_OFF                                              	A32X FBW - OH LIGHTS
+33690	MobiFlight.EMER_EXIT_ARM                                              	A32X FBW - OH LIGHTS
+33691	MobiFlight.ANN_LT_TEST                                                	A32X FBW - OH LIGHTS
+33692	MobiFlight.ANN_LT_BRT                                                 	A32X FBW - OH LIGHTS
+33693	MobiFlight.ANN_LT_DIM                                                 	A32X FBW - OH LIGHTS
+33694	MobiFlight.LEFT_LANDING_LIGHTS_OFF                                    	A32X FBW - OH LIGHTS
+33695	MobiFlight.LEFT_LANDING_LIGHTS_RETRACTED                              	A32X FBW - OH LIGHTS
+33696	MobiFlight.RIGHT_LANDING_LIGHTS_OFF                                   	A32X FBW - OH LIGHTS
+33697	MobiFlight.RIGHT_LANDING_LIGHTS_RETRACTED                             	A32X FBW - OH LIGHTS
+33698	MobiFlight.LONGITUTDE_TOGGLE_MASTER_BATTERY_SWITCH_1                  	LONGITUDE ELECTRICAL
+33699	MobiFlight.LONGITUTDE_TOGGLE_MASTER_BATTERY_SWITCH_2                  	LONGITUDE ELECTRICAL
+33700	MobiFlight.LONGITUTDE_TOGGLE_ALTERNATOR_1_SWITCH_1                    	LONGITUDE ELECTRICAL
+33701	MobiFlight.LONGITUTDE_TOGGLE_ALTERNATOR_2_SWITCH_2                    	LONGITUDE ELECTRICAL
+33702	MobiFlight.LONGITUTDE_TOGGLE_EXTERNAL_POWER_SWITCH                    	LONGITUDE ELECTRICAL
+33703	MobiFlight.LONGITUTDE_LANDING_LIGHTS_L_TOGGLE                         	LONGITUDE LIGHTS
+33704	MobiFlight.LONGITUTDE_LANDING_LIGHTS_R_TOGGLE                         	LONGITUDE LIGHTS
+33705	MobiFlight.LONGITUTDE_TAXI_LIGHTS_TOGGLE                              	LONGITUDE LIGHTS
+33706	MobiFlight.LONGITUTDE_RECOG_LIGHTS_TOGGLE                             	LONGITUDE LIGHTS
+33707	MobiFlight.LONGITUTDE_PULSE_LIGHTS_TOGGLE                             	LONGITUDE LIGHTS
+33708	MobiFlight.LONGITUTDE_WING_INSP_LIGHTS_TOGGLE                         	LONGITUDE LIGHTS
+33709	MobiFlight.LONGITUTDE_TAIL_FLOOD_LIGHTS_TOGGLE                        	LONGITUDE LIGHTS
+33710	MobiFlight.AS3X_1_SOFTKEYS_1                                          	AS3x G1000 PFD
+33711	MobiFlight.AS3X_1_SOFTKEYS_2                                          	AS3x G1000 PFD
+33712	MobiFlight.AS3X_1_SOFTKEYS_3                                          	AS3x G1000 PFD
+33713	MobiFlight.AS3X_1_SOFTKEYS_4                                          	AS3x G1000 PFD
+33714	MobiFlight.AS3X_1_SOFTKEYS_5                                          	AS3x G1000 PFD
+33715	MobiFlight.AS3X_1_ENT_Push                                            	AS3x G1000 PFD
+33716	MobiFlight.AS3X_1_FPL_Push                                            	AS3x G1000 PFD
+33717	MobiFlight.AS3X_1_CLR_Push                                            	AS3x G1000 PFD
+33718	MobiFlight.AS3X_1_MENU_Push                                           	AS3x G1000 PFD
+33719	MobiFlight.AS3X_1_DIRECTTO                                            	AS3x G1000 PFD
+33720	MobiFlight.AS3X_1_NRST_Push                                           	AS3x G1000 PFD
+33721	MobiFlight.AS3X_1_RNG_Dezoom                                          	AS3x G1000 PFD
+33722	MobiFlight.AS3X_1_RNG_Zoom                                            	AS3x G1000 PFD
+33723	MobiFlight.AS3X_1_JOYSTICK_PUSH                                       	AS3x G1000 PFD
+33724	MobiFlight.AS3X_1_TURN_DEC                                            	AS3x G1000 PFD
+33725	MobiFlight.AS3X_1_TURN_INC                                            	AS3x G1000 PFD
+33726	MobiFlight.XMLVAR_Mins_Selector_Baro_RADIO                            	B3D_737 - EFIS FO
+33727	MobiFlight.XMLVAR_Mins_Selector_Baro_BARO                             	B3D_737 - EFIS FO
+33728	MobiFlight.AS01B_PFD_Mins_DEC                                         	B3D_737 - EFIS FO
+33729	MobiFlight.AS01B_PFD_Mins_INC                                         	B3D_737 - EFIS FO
+33730	MobiFlight.AS01B_PFD_Mins_Press                                       	B3D_737 - EFIS FO
+33731	MobiFlight.XMLVAR_Baro_Selector_HPA_1_IN                              	B3D_737 - EFIS CPT
+33732	MobiFlight.XMLVAR_Baro_Selector_HPA_1_HPA                             	B3D_737 - EFIS CPT
+33733	MobiFlight.KNOB_Baro_1_DEC                                            	B3D_737 - EFIS CPT
+33734	MobiFlight.KNOB_Baro_1_INC                                            	B3D_737 - EFIS CPT
+33735	MobiFlight.KNOB_Baro_1_Press                                          	B3D_737 - EFIS CPT
+33736	MobiFlight.AS01B_MFD_1_Cursor_DEC                                     	B3D_737 - EFIS CPT
+33737	MobiFlight.AS01B_MFD_1_Cursor_INC                                     	B3D_737 - EFIS CPT
+33738	MobiFlight.AS01B_MFD_1_Cursor_Press                                   	B3D_737 - EFIS CPT
+33739	MobiFlight.AS01B_MFD_1_Range_DEC                                      	B3D_737 - EFIS CPT
+33740	MobiFlight.AS01B_MFD_1_Range_INC                                      	B3D_737 - EFIS CPT
+33741	MobiFlight.AS01B_MFD_1_AUTOPILOT_CTR                                  	B3D_737 - EFIS CPT
+33742	MobiFlight.AS01B_MFD_1_WXR                                            	B3D_737 - EFIS CPT
+33743	MobiFlight.AS01B_MFD_1_TFC                                            	B3D_737 - EFIS CPT
+33744	MobiFlight.AS01B_MFD_1_TERR                                           	B3D_737 - EFIS CPT
+33745	MobiFlight.AS01B_MFD_1_SYS                                            	B3D_737 - EFIS CPT
+33746	MobiFlight.AS01B_MFD_1_INFO                                           	B3D_737 - EFIS CPT
+33747	MobiFlight.AS01B_MFD_1_CHKL                                           	B3D_737 - EFIS CPT
+33748	MobiFlight.AS01B_MFD_1_COMM                                           	B3D_737 - EFIS CPT
+33749	MobiFlight.AS01B_MFD_1_ND                                             	B3D_737 - EFIS CPT
+33750	MobiFlight.AS01B_MFD_1_ENG                                            	B3D_737 - EFIS CPT
+33751	MobiFlight.AS01B_MFD_1_EICAS                                          	B3D_737 - EFIS CPT
+33752	MobiFlight.XMLVAR_Mins_Selector_Baro_RADIO                            	B3D_737 - EFIS FO
+33753	MobiFlight.XMLVAR_Mins_Selector_Baro_BARO                             	B3D_737 - EFIS FO
+33754	MobiFlight.AS01B_PFD_Mins_DEC                                         	B3D_737 - EFIS FO
+33755	MobiFlight.AS01B_PFD_Mins_INC                                         	B3D_737 - EFIS FO
+33756	MobiFlight.AS01B_PFD_Mins_Press                                       	B3D_737 - EFIS FO
+33757	MobiFlight.XMLVAR_Baro_Selector_HPA_2_IN                              	B3D_737 - EFIS FO
+33758	MobiFlight.XMLVAR_Baro_Selector_HPA_2_HPA                             	B3D_737 - EFIS FO
+33759	MobiFlight.KNOB_Baro_2_DEC                                            	B3D_737 - EFIS FO
+33760	MobiFlight.KNOB_Baro_2_INC                                            	B3D_737 - EFIS FO
+33761	MobiFlight.KNOB_Baro_2_Press                                          	B3D_737 - EFIS FO
+33762	MobiFlight.AS01B_MFD_2_Cursor_DEC                                     	B3D_737 - EFIS FO
+33763	MobiFlight.AS01B_MFD_2_Cursor_INC                                     	B3D_737 - EFIS FO
+33764	MobiFlight.AS01B_MFD_2_Cursor_Press                                   	B3D_737 - EFIS FO
+33765	MobiFlight.AS01B_MFD_2_Range_DEC                                      	B3D_737 - EFIS FO
+33766	MobiFlight.AS01B_MFD_2_Range_INC                                      	B3D_737 - EFIS FO
+33767	MobiFlight.AS01B_MFD_2_AUTOPILOT_CTR                                  	B3D_737 - EFIS FO
+33768	MobiFlight.AS01B_MFD_2_WXR                                            	B3D_737 - EFIS FO
+33769	MobiFlight.AS01B_MFD_2_TERR                                           	B3D_737 - EFIS FO
+33770	MobiFlight.AS01B_MFD_2_SYS                                            	B3D_737 - EFIS FO
+33771	MobiFlight.AS01B_MFD_2_INFO                                           	B3D_737 - EFIS FO
+33772	MobiFlight.AS01B_MFD_2_CHKL                                           	B3D_737 - EFIS FO
+33773	MobiFlight.AS01B_MFD_2_COMM                                           	B3D_737 - EFIS FO
+33774	MobiFlight.AS01B_MFD_2_ND                                             	B3D_737 - EFIS FO
+33775	MobiFlight.AS01B_MFD_2_ENG                                            	B3D_737 - EFIS FO
+33776	MobiFlight.AS01B_MFD_2_EICAS                                          	B3D_737 - EFIS FO
+33777	MobiFlight.WT_CJ4_AP_FD_PRESSED                                       	WT CJ4 AP
+33778	MobiFlight.WT_CJ4_AP_CRS1_DEC                                         	WT CJ4 AP
+33779	MobiFlight.WT_CJ4_AP_CRS1_INC                                         	WT CJ4 AP
+33780	MobiFlight.WT_CJ4_AP_CRS1_PRESSED                                     	WT CJ4 AP
+33781	MobiFlight.WT_CJ4_AP_VS_PRESSED                                       	WT CJ4 AP
+33782	MobiFlight.WT_CJ4_AP_VNAV_PRESSED                                     	WT CJ4 AP
+33783	MobiFlight.WT_CJ4_AP_VS_INC                                           	WT CJ4 AP
+33784	MobiFlight.WT_CJ4_AP_VS_DEC                                           	WT CJ4 AP
+33785	MobiFlight.WT_CJ4_AP_FLC_PRESSED                                      	WT CJ4 AP
+33786	MobiFlight.WT_CJ4_AP_SPEED_DEC                                        	WT CJ4 AP
+33787	MobiFlight.WT_CJ4_AP_SPEED_INC                                        	WT CJ4 AP
+33788	MobiFlight.WT_CJ4_AP_SPEED_FAST_DEC                                   	WT CJ4 AP
+33789	MobiFlight.WT_CJ4_AP_SPEED_FAST_INC                                   	WT CJ4 AP
+33790	MobiFlight.WT_CJ4_AP_SPEED_PRESSED                                    	WT CJ4 AP
+33791	MobiFlight.WT_CJ4_AP_NAV_PRESSED                                      	WT CJ4 AP
+33792	MobiFlight.WT_CJ4_AP_HALFBANK_PRESSED                                 	WT CJ4 AP
+33793	MobiFlight.WT_CJ4_AP_HDG_PRESSED                                      	WT CJ4 AP
+33794	MobiFlight.WT_CJ4_AP_HDG_DEC                                          	WT CJ4 AP
+33795	MobiFlight.WT_CJ4_AP_HDG_INC                                          	WT CJ4 AP
+33796	MobiFlight.WT_CJ4_AP_HDG_FAST_DEC                                     	WT CJ4 AP
+33797	MobiFlight.WT_CJ4_AP_HDG_FAST_INC                                     	WT CJ4 AP
+33798	MobiFlight.WT_CJ4_AP_HDG_SYNC                                         	WT CJ4 AP
+33799	MobiFlight.WT_CJ4_AP_APPR_PRESSED                                     	WT CJ4 AP
+33800	MobiFlight.WT_CJ4_AP_BC_PRESSED                                       	WT CJ4 AP
+33801	MobiFlight.WT_CJ4_AP_ALT_PRESSED                                      	WT CJ4 AP
+33802	MobiFlight.WT_CJ4_AP_ALT_VAR_DEC                                      	WT CJ4 AP
+33803	MobiFlight.WT_CJ4_AP_ALT_VAR_INC                                      	WT CJ4 AP
+33804	MobiFlight.WT_CJ4_AP_ALT_FAST_DEC                                     	WT CJ4 AP
+33805	MobiFlight.WT_CJ4_AP_ALT_FAST_INC                                     	WT CJ4 AP
+33806	MobiFlight.WT_CJ4_AP_ALT_ALERT_CANCEL                                 	WT CJ4 AP
+33807	MobiFlight.WT_CJ4_AP_YD_PRESSED                                       	WT CJ4 AP
+33808	MobiFlight.WT_CJ4_AP_XFR_PRESSED                                      	WT CJ4 AP
+33809	MobiFlight.WT_CJ4_AP_MASTER_ON                                        	WT CJ4 AP
+33810	MobiFlight.WT_CJ4_AP_MASTER_OFF                                       	WT CJ4 AP
+33811	MobiFlight.Generic_Lwr_Push_MEM1_1                                    	WT CJ4 LOWER PANEL
+33812	MobiFlight.Generic_Lwr_Push_MEM2_1                                    	WT CJ4 LOWER PANEL
+33813	MobiFlight.Generic_Lwr_Push_MEM3_1                                    	WT CJ4 LOWER PANEL
+33814	MobiFlight.Generic_Lwr_Push_CKLST_1                                   	WT CJ4 LOWER PANEL
+33815	MobiFlight.Generic_Lwr_Push_PASSBRIEF_1                               	WT CJ4 LOWER PANEL
+33816	MobiFlight.Generic_Lwr_Push_ESC                                       	WT CJ4 LOWER PANEL
+33817	MobiFlight.Generic_Lwr_Push_UPR_MENU                                  	WT CJ4 LOWER PANEL
+33818	MobiFlight.Generic_Lwr_Push_LWR_MENU                                  	WT CJ4 LOWER PANEL
+33819	MobiFlight.Generic_Lwr_Push_TERR_WX                                   	WT CJ4 LOWER PANEL
+33820	MobiFlight.Generic_Lwr_Push_TFC                                       	WT CJ4 LOWER PANEL
+33821	MobiFlight.Generic_Lwr_Push_SYS                                       	WT CJ4 LOWER PANEL
+33822	MobiFlight.Generic_Lwr_Push_ENG                                       	WT CJ4 LOWER PANEL
+33823	MobiFlight.Generic_Lwr_MENU_ADV_INC                                   	WT CJ4 LOWER PANEL
+33824	MobiFlight.Generic_Lwr_MENU_ADV_DEC                                   	WT CJ4 LOWER PANEL
+33825	MobiFlight.Generic_Lwr_DATA_PUSH                                      	WT CJ4 LOWER PANEL
+33826	MobiFlight.Generic_Lwr_Push_ZOOM_INC                                  	WT CJ4 LOWER PANEL
+33827	MobiFlight.Generic_Lwr_Push_ZOOM_DEC                                  	WT CJ4 LOWER PANEL
+33828	MobiFlight.Generic_Lwr_JOYSTICK_UP                                    	WT CJ4 LOWER PANEL
+33829	MobiFlight.Generic_Lwr_JOYSTICK_DOWN                                  	WT CJ4 LOWER PANEL
+33830	MobiFlight.Generic_Lwr_JOYSTICK_LEFT                                  	WT CJ4 LOWER PANEL
+33831	MobiFlight.Generic_Lwr_JOYSTICK_RIGHT                                 	WT CJ4 LOWER PANEL
+33832	MobiFlight.Generic_Lwr_Push_Chart_1                                   	WT CJ4 LOWER PANEL
+33833	MobiFlight.Generic_Lwr_Push_CAS_PAGE                                  	WT CJ4 LOWER PANEL
+33834	MobiFlight.Generic_Lwr_Push_NAV_DATA                                  	WT CJ4 LOWER PANEL
+33835	MobiFlight.Generic_Lwr_DATA_DEC                                       	WT CJ4 LOWER PANEL
+33836	MobiFlight.Generic_Lwr_DATA_INC                                       	WT CJ4 LOWER PANEL
+33837	MobiFlight.Generic_Lwr_DATA_PUSH_LONG                                 	WT CJ4 LOWER PANEL
+33838	MobiFlight.Generic_Upr_Push_NAV                                       	WT CJ4 Upper PFD Menu
+33839	MobiFlight.Generic_Upr_Push_PFD_MENU                                  	WT CJ4 Upper PFD Menu
+33840	MobiFlight.Generic_Upr_RANGE_INC                                      	WT CJ4 Upper PFD Menu
+33841	MobiFlight.Generic_Upr_RANGE_DEC                                      	WT CJ4 Upper PFD Menu
+33842	MobiFlight.Generic_Upr_MENU_ADV_DEC                                   	WT CJ4 Upper PFD Menu
+33843	MobiFlight.Generic_Upr_MENU_ADV_INC                                   	WT CJ4 Upper PFD Menu
+33844	MobiFlight.Generic_Upr_Data_DEC                                       	WT CJ4 Upper PFD Menu
+33845	MobiFlight.Generic_Upr_Data_INC                                       	WT CJ4 Upper PFD Menu
+33846	MobiFlight.Generic_Upr_Data_PUSH                                      	WT CJ4 Upper PFD Menu
+33847	MobiFlight.Generic_Upr_Push_ESC                                       	WT CJ4 Upper PFD Menu
+33848	MobiFlight.Generic_Upr_Push_ET                                        	WT CJ4 Upper PFD Menu
+33849	MobiFlight.Generic_Upr_Push_FRMT                                      	WT CJ4 Upper PFD Menu
+33850	MobiFlight.Generic_Upr_Push_TERR_WX                                   	WT CJ4 Upper PFD Menu
+33851	MobiFlight.Generic_Upr_Push_TFC                                       	WT CJ4 Upper PFD Menu
+33852	MobiFlight.Generic_Upr_Push_REFS_MENU                                 	WT CJ4 Upper PFD Menu
+33853	MobiFlight.CJ4_FMC_1_BTN_IDX                                          	WT CJ4 FMC
+33854	MobiFlight.CJ4_FMC_1_BTN_MSG                                          	WT CJ4 FMC
+33855	MobiFlight.CJ4_FMC_1_BTN_DIR                                          	WT CJ4 FMC
+33856	MobiFlight.CJ4_FMC_1_BTN_TUN                                          	WT CJ4 FMC
+33857	MobiFlight.CJ4_FMC_1_BTN_FPLN                                         	WT CJ4 FMC
+33858	MobiFlight.CJ4_FMC_1_BTN_LEGS                                         	WT CJ4 FMC
+33859	MobiFlight.CJ4_FMC_1_BTN_DEPARR                                       	WT CJ4 FMC
+33860	MobiFlight.CJ4_FMC_1_BTN_PERF                                         	WT CJ4 FMC
+33861	MobiFlight.CJ4_FMC_1_BTN_DSPL_MENU                                    	WT CJ4 FMC
+33862	MobiFlight.CJ4_FMC_1_BTN_MFD_ADV                                      	WT CJ4 FMC
+33863	MobiFlight.CJ4_FMC_1_BTN_MFD_DATA                                     	WT CJ4 FMC
+33864	MobiFlight.CJ4_FMC_1_BTN_PREVPAGE                                     	WT CJ4 FMC
+33865	MobiFlight.CJ4_FMC_1_BTN_NEXTPAGE                                     	WT CJ4 FMC
+33866	MobiFlight.CJ4_FMC_1_BTN_EXEC                                         	WT CJ4 FMC
+33867	MobiFlight.CJ4_FMC_1_BTN_CLR                                          	WT CJ4 FMC
+33868	MobiFlight.CJ4_FMC_1_BTN_CLR_Long                                     	WT CJ4 FMC
+33869	MobiFlight.CJ4_FMC_1_BTN_L1                                           	WT CJ4 FMC
+33870	MobiFlight.CJ4_FMC_1_BTN_L2                                           	WT CJ4 FMC
+33871	MobiFlight.CJ4_FMC_1_BTN_L3                                           	WT CJ4 FMC
+33872	MobiFlight.CJ4_FMC_1_BTN_L4                                           	WT CJ4 FMC
+33873	MobiFlight.CJ4_FMC_1_BTN_L5                                           	WT CJ4 FMC
+33874	MobiFlight.CJ4_FMC_1_BTN_L6                                           	WT CJ4 FMC
+33875	MobiFlight.CJ4_FMC_1_BTN_R1                                           	WT CJ4 FMC
+33876	MobiFlight.CJ4_FMC_1_BTN_R2                                           	WT CJ4 FMC
+33877	MobiFlight.CJ4_FMC_1_BTN_R3                                           	WT CJ4 FMC
+33878	MobiFlight.CJ4_FMC_1_BTN_R4                                           	WT CJ4 FMC
+33879	MobiFlight.CJ4_FMC_1_BTN_R5                                           	WT CJ4 FMC
+33880	MobiFlight.CJ4_FMC_1_BTN_R6                                           	WT CJ4 FMC
+33881	MobiFlight.CJ4_FMC_1_BTN_A                                            	WT CJ4 FMC
+33882	MobiFlight.CJ4_FMC_1_BTN_B                                            	WT CJ4 FMC
+33883	MobiFlight.CJ4_FMC_1_BTN_C                                            	WT CJ4 FMC
+33884	MobiFlight.CJ4_FMC_1_BTN_D                                            	WT CJ4 FMC
+33885	MobiFlight.CJ4_FMC_1_BTN_E                                            	WT CJ4 FMC
+33886	MobiFlight.CJ4_FMC_1_BTN_F                                            	WT CJ4 FMC
+33887	MobiFlight.CJ4_FMC_1_BTN_G                                            	WT CJ4 FMC
+33888	MobiFlight.CJ4_FMC_1_BTN_H                                            	WT CJ4 FMC
+33889	MobiFlight.CJ4_FMC_1_BTN_I                                            	WT CJ4 FMC
+33890	MobiFlight.CJ4_FMC_1_BTN_J                                            	WT CJ4 FMC
+33891	MobiFlight.CJ4_FMC_1_BTN_K                                            	WT CJ4 FMC
+33892	MobiFlight.CJ4_FMC_1_BTN_L                                            	WT CJ4 FMC
+33893	MobiFlight.CJ4_FMC_1_BTN_M                                            	WT CJ4 FMC
+33894	MobiFlight.CJ4_FMC_1_BTN_N                                            	WT CJ4 FMC
+33895	MobiFlight.CJ4_FMC_1_BTN_O                                            	WT CJ4 FMC
+33896	MobiFlight.CJ4_FMC_1_BTN_P                                            	WT CJ4 FMC
+33897	MobiFlight.CJ4_FMC_1_BTN_Q                                            	WT CJ4 FMC
+33898	MobiFlight.CJ4_FMC_1_BTN_R                                            	WT CJ4 FMC
+33899	MobiFlight.CJ4_FMC_1_BTN_S                                            	WT CJ4 FMC
+33900	MobiFlight.CJ4_FMC_1_BTN_T                                            	WT CJ4 FMC
+33901	MobiFlight.CJ4_FMC_1_BTN_U                                            	WT CJ4 FMC
+33902	MobiFlight.CJ4_FMC_1_BTN_V                                            	WT CJ4 FMC
+33903	MobiFlight.CJ4_FMC_1_BTN_W                                            	WT CJ4 FMC
+33904	MobiFlight.CJ4_FMC_1_BTN_X                                            	WT CJ4 FMC
+33905	MobiFlight.CJ4_FMC_1_BTN_Y                                            	WT CJ4 FMC
+33906	MobiFlight.CJ4_FMC_1_BTN_Z                                            	WT CJ4 FMC
+33907	MobiFlight.CJ4_FMC_1_BTN_SP                                           	WT CJ4 FMC
+33908	MobiFlight.CJ4_FMC_1_BTN_0                                            	WT CJ4 FMC
+33909	MobiFlight.CJ4_FMC_1_BTN_1                                            	WT CJ4 FMC
+33910	MobiFlight.CJ4_FMC_1_BTN_2                                            	WT CJ4 FMC
+33911	MobiFlight.CJ4_FMC_1_BTN_3                                            	WT CJ4 FMC
+33912	MobiFlight.CJ4_FMC_1_BTN_4                                            	WT CJ4 FMC
+33913	MobiFlight.CJ4_FMC_1_BTN_5                                            	WT CJ4 FMC
+33914	MobiFlight.CJ4_FMC_1_BTN_6                                            	WT CJ4 FMC
+33915	MobiFlight.CJ4_FMC_1_BTN_7                                            	WT CJ4 FMC
+33916	MobiFlight.CJ4_FMC_1_BTN_8                                            	WT CJ4 FMC
+33917	MobiFlight.CJ4_FMC_1_BTN_9                                            	WT CJ4 FMC
+33918	MobiFlight.CJ4_FMC_1_BTN_DOT                                          	WT CJ4 FMC
+33919	MobiFlight.CJ4_FMC_1_BTN_PLUSMINUS                                    	WT CJ4 FMC
+33920	MobiFlight.CJ4_FMC_1_BTN_DIV                                          	WT CJ4 FMC
+33921	MobiFlight.WT_CJ4_CABIN1_LIGHT_DEC                                    	WT CJ4 LIGHTS
+33922	MobiFlight.WT_CJ4_CABIN1_LIGHT_INC                                    	WT CJ4 LIGHTS
+33923	MobiFlight.WT_CJ4_CABIN1_LIGHT_TOGGLE                                 	WT CJ4 LIGHTS
+33924	MobiFlight.WT_CJ4_CABIN2_LIGHT_DEC                                    	WT CJ4 LIGHTS
+33925	MobiFlight.WT_CJ4_CABIN2_LIGHT_INC                                    	WT CJ4 LIGHTS
+33926	MobiFlight.WT_CJ4_CABIN2_LIGHT_TOGGLE                                 	WT CJ4 LIGHTS
+33927	MobiFlight.WT_CJ4_FLOOD_LIGHT_DEC                                     	WT CJ4 LIGHTS
+33928	MobiFlight.WT_CJ4_FLOOD_LIGHT_INC                                     	WT CJ4 LIGHTS
+33929	MobiFlight.WT_CJ4_FLOOD_LIGHT_TOGGLE                                  	WT CJ4 LIGHTS
+33930	MobiFlight.WT_CJ4_LANDING_LIGHTS_OFF                                  	WT CJ4 LIGHTS
+33931	MobiFlight.WT_CJ4_LANDING_LIGHTS_ON                                   	WT CJ4 LIGHTS
+33932	MobiFlight.WT_CJ4_LANDING_LIGHTS_TOGGLE                               	WT CJ4 LIGHTS
+33933	MobiFlight.WT_CJ4_MFD1_LIGHT_DEC                                      	WT CJ4 LIGHTS
+33934	MobiFlight.WT_CJ4_MFD1_LIGHT_INC                                      	WT CJ4 LIGHTS
+33935	MobiFlight.WT_CJ4_MFD2_LIGHT_DEC                                      	WT CJ4 LIGHTS
+33936	MobiFlight.WT_CJ4_MFD2_LIGHT_INC                                      	WT CJ4 LIGHTS
+33937	MobiFlight.WT_CJ4_PANEL_LIGHTS_DEC                                    	WT CJ4 LIGHTS
+33938	MobiFlight.WT_CJ4_PANEL_LIGHTS_INC                                    	WT CJ4 LIGHTS
+33939	MobiFlight.WT_CJ4_PANEL_LIGHTS_TOGGLE                                 	WT CJ4 LIGHTS
+33940	MobiFlight.WT_CJ4_PFD1_LIGHT_DEC                                      	WT CJ4 LIGHTS
+33941	MobiFlight.WT_CJ4_PFD1_LIGHT_INC                                      	WT CJ4 LIGHTS
+33942	MobiFlight.WT_CJ4_PFD2_LIGHT_DEC                                      	WT CJ4 LIGHTS
+33943	MobiFlight.WT_CJ4_PFD2_LIGHT_INC                                      	WT CJ4 LIGHTS
+33944	MobiFlight.WT_CJ4_RECOGNITION_LIGHTS_OFF                              	WT CJ4 LIGHTS
+33945	MobiFlight.WT_CJ4_RECOGNITION_LIGHTS_ON                               	WT CJ4 LIGHTS
+33946	MobiFlight.WT_CJ4_RECOGNITION_LIGHTS_TOGGLE                           	WT CJ4 LIGHTS
+33947	MobiFlight.WT_CJ4_SAFETY_LIGHT_TOGGLE                                 	WT CJ4 LIGHTS
+33948	MobiFlight.WT_CJ4_SEATBELT_LIGHT_TOGGLE                               	WT CJ4 LIGHTS
+33949	MobiFlight.WT_CJ4_TAXI_LIGHTS_OFF                                     	WT CJ4 LIGHTS
+33950	MobiFlight.WT_CJ4_TAXI_LIGHTS_ON                                      	WT CJ4 LIGHTS
+33951	MobiFlight.WT_CJ4_TAXI_LIGHTS_TOGGLE                                  	WT CJ4 LIGHTS
+33952	MobiFlight.B747_8_XMLVAR_Mins_Selector_Baro_RADIO                     	B747-8 - EFIS CPT
+33953	MobiFlight.B747_8_XMLVAR_Mins_Selector_Baro_BARO                      	B747-8 - EFIS CPT
+33954	MobiFlight.B747_8_PFD_Mins_DEC                                        	B747-8 - EFIS CPT
+33955	MobiFlight.B747_8_PFD_Mins_INC                                        	B747-8 - EFIS CPT
+33956	MobiFlight.B747_8_PFD_Mins_Press                                      	B747-8 - EFIS CPT
+33957	MobiFlight.B747_8_PFD_FPV                                             	B747-8 - EFIS CPT
+33958	MobiFlight.B747_8_PFD_MTRS                                            	B747-8 - EFIS CPT
+33959	MobiFlight.B747_8_XMLVAR_Baro_Selector_HPA_1_IN                       	B747-8 - EFIS CPT
+33960	MobiFlight.B747_8_XMLVAR_Baro_Selector_HPA_1_HPA                      	B747-8 - EFIS CPT
+33961	MobiFlight.B747_8_BARO_DEC                                            	B747-8 - EFIS CPT
+33962	MobiFlight.B747_8_BARO_INC                                            	B747-8 - EFIS CPT
+33963	MobiFlight.B747_8_XMLVAR_Baro1_ForcedToSTD_                           	B747-8 - EFIS CPT
+33964	MobiFlight.B747_8_XMLVAR_NAV_AID_SWITCH_L1_State_VOR                  	B747-8 - EFIS CPT
+33965	MobiFlight.B747_8_XMLVAR_NAV_AID_SWITCH_L1_State_OFF                  	B747-8 - EFIS CPT
+33966	MobiFlight.B747_8_XMLVAR_NAV_AID_SWITCH_L1_State_ADF                  	B747-8 - EFIS CPT
+33967	MobiFlight.B747_8_MFD_NAV_MODE_APP                                    	B747-8 - EFIS CPT
+33968	MobiFlight.B747_8_MFD_NAV_MODE_VOR                                    	B747-8 - EFIS CPT
+33969	MobiFlight.B747_8_MFD_NAV_MODE_MAP                                    	B747-8 - EFIS CPT
+33970	MobiFlight.B747_8_MFD_NAV_MODE_PLN                                    	B747-8 - EFIS CPT
+33971	MobiFlight.B747_8_MFD_NAV_MODE_DEC                                    	B747-8 - EFIS CPT
+33972	MobiFlight.B747_8_MFD_NAV_MODE_INC                                    	B747-8 - EFIS CPT
+33973	MobiFlight.B747_8_MFD_Range_0.25                                      	B747-8 - EFIS CPT
+33974	MobiFlight.B747_8_MFD_Range_0.5                                       	B747-8 - EFIS CPT
+33975	MobiFlight.B747_8_MFD_Range_1                                         	B747-8 - EFIS CPT
+33976	MobiFlight.B747_8_MFD_Range_2                                         	B747-8 - EFIS CPT
+33977	MobiFlight.B747_8_MFD_Range_5                                         	B747-8 - EFIS CPT
+33978	MobiFlight.B747_8_MFD_Range_10                                        	B747-8 - EFIS CPT
+33979	MobiFlight.B747_8_MFD_Range_20                                        	B747-8 - EFIS CPT
+33980	MobiFlight.B747_8_MFD_Range_40                                        	B747-8 - EFIS CPT
+33981	MobiFlight.B747_8_MFD_Range_80                                        	B747-8 - EFIS CPT
+33982	MobiFlight.B747_8_MFD_Range_160                                       	B747-8 - EFIS CPT
+33983	MobiFlight.B747_8_MFD_Range_320                                       	B747-8 - EFIS CPT
+33984	MobiFlight.B747_8_MFD_Range_640                                       	B747-8 - EFIS CPT
+33985	MobiFlight.B747_8_MFD_Range_DEC                                       	B747-8 - EFIS CPT
+33986	MobiFlight.B747_8_MFD_Range_INC                                       	B747-8 - EFIS CPT
+33987	MobiFlight.B747_8_XMLVAR_NAV_AID_SWITCH_L2_State_VOR                  	B747-8 - EFIS CPT
+33988	MobiFlight.B747_8_XMLVAR_NAV_AID_SWITCH_L2_State_OFF                  	B747-8 - EFIS CPT
+33989	MobiFlight.B747_8_XMLVAR_NAV_AID_SWITCH_L2_State_ADF                  	B747-8 - EFIS CPT
+33990	MobiFlight.B747_8_BTN_WXR                                             	B747-8 - EFIS CPT
+33991	MobiFlight.B747_8_BTN_STA                                             	B747-8 - EFIS CPT
+33992	MobiFlight.B747_8_BTN_WPT                                             	B747-8 - EFIS CPT
+33993	MobiFlight.B747_8_BTN_ARPT                                            	B747-8 - EFIS CPT
+33994	MobiFlight.B747_8_BTN_DATA                                            	B747-8 - EFIS CPT
+33995	MobiFlight.B747_8_BTN_POS                                             	B747-8 - EFIS CPT
+33996	MobiFlight.B747_8_BTN_TERR                                            	B747-8 - EFIS CPT
+33997	MobiFlight.H135_DISPLAY_RIGHT_ON                                      	H135 Right MFD
+33998	MobiFlight.H135_MFDR_SoftKey_Top_1                                    	H135 Right MFD
+33999	MobiFlight.H135_MFDR_SoftKey_Top_2                                    	H135 Right MFD
+34000	MobiFlight.H135_MFDR_SoftKey_Top_3                                    	H135 Right MFD
+34001	MobiFlight.H135_MFDR_SoftKey_Top_4                                    	H135 Right MFD
+34002	MobiFlight.H135_MFDR_SoftKey_Top_5                                    	H135 Right MFD
+34003	MobiFlight.H135_MFDR_SoftKey_Top_6                                    	H135 Right MFD
+34004	MobiFlight.H135_MFDR_SoftKey_Bottom_1                                 	H135 Right MFD
+34005	MobiFlight.H135_MFDR_SoftKey_Bottom_2                                 	H135 Right MFD
+34006	MobiFlight.H135_MFDR_SoftKey_Bottom_3                                 	H135 Right MFD
+34007	MobiFlight.H135_MFDR_SoftKey_Bottom_4                                 	H135 Right MFD
+34008	MobiFlight.H135_MFDR_SoftKey_Bottom_5                                 	H135 Right MFD
+34009	MobiFlight.H135_MFDR_SoftKey_Bottom_6                                 	H135 Right MFD
+34010	MobiFlight.H135_MFDR_SoftKey_Left_1                                   	H135 Right MFD
+34011	MobiFlight.H135_MFDR_SoftKey_Left_2                                   	H135 Right MFD
+34012	MobiFlight.H135_MFDR_SoftKey_Left_3                                   	H135 Right MFD
+34013	MobiFlight.H135_MFDR_SoftKey_Left_4                                   	H135 Right MFD
+34014	MobiFlight.H135_MFDR_SoftKey_Left_5                                   	H135 Right MFD
+34015	MobiFlight.H135_MFDR_SoftKey_Left_6                                   	H135 Right MFD
+34016	MobiFlight.H135_MFDR_SoftKey_Right_1                                  	H135 Right MFD
+34017	MobiFlight.H135_MFDR_SoftKey_Right_2                                  	H135 Right MFD
+34018	MobiFlight.H135_MFDR_SoftKey_Right_3                                  	H135 Right MFD
+34019	MobiFlight.H135_MFDR_SoftKey_Right_4                                  	H135 Right MFD
+34020	MobiFlight.H135_MFDR_SoftKey_Right_5                                  	H135 Right MFD
+34021	MobiFlight.H135_MFDR_SoftKey_Right_6                                  	H135 Right MFD
+34022	MobiFlight.H135_DISPLAY_CENTER_ON                                     	H135 Center MFD
+34023	MobiFlight.H135_MFDC_SoftKey_Top_1                                    	H135 Center MFD
+34024	MobiFlight.H135_MFDC_SoftKey_Top_2                                    	H135 Center MFD
+34025	MobiFlight.H135_MFDC_SoftKey_Top_3                                    	H135 Center MFD
+34026	MobiFlight.H135_MFDC_SoftKey_Top_4                                    	H135 Center MFD
+34027	MobiFlight.H135_MFDC_SoftKey_Top_5                                    	H135 Center MFD
+34028	MobiFlight.H135_MFDC_SoftKey_Top_6                                    	H135 Center MFD
+34029	MobiFlight.H135_MFDC_SoftKey_Bottom_1                                 	H135 Center MFD
+34030	MobiFlight.H135_MFDC_SoftKey_Bottom_2                                 	H135 Center MFD
+34031	MobiFlight.H135_MFDC_SoftKey_Bottom_3                                 	H135 Center MFD
+34032	MobiFlight.H135_MFDC_SoftKey_Bottom_4                                 	H135 Center MFD
+34033	MobiFlight.H135_MFDC_SoftKey_Bottom_5                                 	H135 Center MFD
+34034	MobiFlight.H135_MFDC_SoftKey_Bottom_6                                 	H135 Center MFD
+34035	MobiFlight.H135_MFDC_SoftKey_Left_1                                   	H135 Center MFD
+34036	MobiFlight.H135_MFDC_SoftKey_Left_2                                   	H135 Center MFD
+34037	MobiFlight.H135_MFDC_SoftKey_Left_3                                   	H135 Center MFD
+34038	MobiFlight.H135_MFDC_SoftKey_Left_4                                   	H135 Center MFD
+34039	MobiFlight.H135_MFDC_SoftKey_Left_5                                   	H135 Center MFD
+34040	MobiFlight.H135_MFDC_SoftKey_Left_6                                   	H135 Center MFD
+34041	MobiFlight.H135_MFDC_SoftKey_Right_1                                  	H135 Center MFD
+34042	MobiFlight.H135_MFDC_SoftKey_Right_2                                  	H135 Center MFD
+34043	MobiFlight.H135_MFDC_SoftKey_Right_3                                  	H135 Center MFD
+34044	MobiFlight.H135_MFDC_SoftKey_Right_4                                  	H135 Center MFD
+34045	MobiFlight.H135_MFDC_SoftKey_Right_5                                  	H135 Center MFD
+34046	MobiFlight.H135_MFDC_SoftKey_Right_6                                  	H135 Center MFD
+34047	MobiFlight.H135_DISPLAY_LEFT_ON                                       	H135 Left MFD
+34048	MobiFlight.H135_MFDL_SoftKey_Top_1                                    	H135 Left MFD
+34049	MobiFlight.H135_MFDL_SoftKey_Top_2                                    	H135 Left MFD
+34050	MobiFlight.H135_MFDL_SoftKey_Top_3                                    	H135 Left MFD
+34051	MobiFlight.H135_MFDL_SoftKey_Top_4                                    	H135 Left MFD
+34052	MobiFlight.H135_MFDL_SoftKey_Top_5                                    	H135 Left MFD
+34053	MobiFlight.H135_MFDL_SoftKey_Top_6                                    	H135 Left MFD
+34054	MobiFlight.H135_MFDL_SoftKey_Bottom_1                                 	H135 Left MFD
+34055	MobiFlight.H135_MFDL_SoftKey_Bottom_2                                 	H135 Left MFD
+34056	MobiFlight.H135_MFDL_SoftKey_Bottom_3                                 	H135 Left MFD
+34057	MobiFlight.H135_MFDL_SoftKey_Bottom_4                                 	H135 Left MFD
+34058	MobiFlight.H135_MFDL_SoftKey_Bottom_5                                 	H135 Left MFD
+34059	MobiFlight.H135_MFDL_SoftKey_Bottom_6                                 	H135 Left MFD
+34060	MobiFlight.H135_MFDL_SoftKey_Left_1                                   	H135 Left MFD
+34061	MobiFlight.H135_MFDL_SoftKey_Left_2                                   	H135 Left MFD
+34062	MobiFlight.H135_MFDL_SoftKey_Left_3                                   	H135 Left MFD
+34063	MobiFlight.H135_MFDL_SoftKey_Left_4                                   	H135 Left MFD
+34064	MobiFlight.H135_MFDL_SoftKey_Left_5                                   	H135 Left MFD
+34065	MobiFlight.H135_MFDL_SoftKey_Left_6                                   	H135 Left MFD
+34066	MobiFlight.H135_MFDL_SoftKey_Right_1                                  	H135 Left MFD
+34067	MobiFlight.H135_MFDL_SoftKey_Right_2                                  	H135 Left MFD
+34068	MobiFlight.H135_MFDL_SoftKey_Right_3                                  	H135 Left MFD
+34069	MobiFlight.H135_MFDL_SoftKey_Right_4                                  	H135 Left MFD
+34070	MobiFlight.H135_MFDL_SoftKey_Right_5                                  	H135 Left MFD
+34071	MobiFlight.H135_MFDL_SoftKey_Right_6                                  	H135 Left MFD
+34072	MobiFlight.H135_Left_Lower_MFD                                        	H135 Lower MFD's
+34073	MobiFlight.H135_Right_Lower_MFD                                       	H135 Lower MFD's
+34074	MobiFlight.H135_Engine1_Up                                            	H135 Engines
+34075	MobiFlight.H135_Engine2_Up                                            	H135 Engines
+34076	MobiFlight.H135_Engine1_Down                                          	H135 Engines
+34077	MobiFlight.H135_Engine2_Down                                          	H135 Engines
+34078	MobiFlight.H135_Pilot_1_Show                                          	H135 Pilots
+34079	MobiFlight.H135_Pilot_0_Show                                          	H135 Pilots
+34080	MobiFlight.H135_Turbo_Mode                                            	H135 Misc
+34081	MobiFlight.H135_Search_Light                                          	H135 Misc
+34082	MobiFlight.H135_Tablet_Open                                           	H135 Misc
+34083	MobiFlight.H135_MFDR_Knob_Up                                          	H135 Misc
+34084	MobiFlight.H135_MFDR_Knob_Down                                        	H135 Misc
+34085	MobiFlight.H135_MMFDC_Knob_Up                                         	H135 Misc
+34086	MobiFlight.H135_MMFDC_Knob_Down                                       	H135 Misc
+34087	MobiFlight.H135_MFDL_Knob_Up                                          	H135 Misc
+34088	MobiFlight.H135_MFDL_Knob_Down                                        	H135 Misc
+34089	MobiFlight.H135_MFDR_SoftKey_Right_BRT_Up                             	H135 Misc
+34090	MobiFlight.H135_MFDR_SoftKey_Right_BRT_Down                           	H135 Misc
+34091	MobiFlight.H135_MFDC_SoftKey_Right_BRT_Up                             	H135 Misc
+34092	MobiFlight.H135_MFDC_SoftKey_Right_BRT_Down                           	H135 Misc
+34093	MobiFlight.H135_MFDL_SoftKey_Right_BRT_Up                             	H135 Misc
+34094	MobiFlight.H135_MFDL_SoftKey_Right_BRT_Down                           	H135 Misc
+34095	MobiFlight.KX175_COMM2_outer_knob_left                                	JF PA28
+34096	MobiFlight.KX175_COMM2_outer_knob_right                               	JF PA28
+34097	MobiFlight.KX175_COMM2_inner_knob_left                                	JF PA28
+34098	MobiFlight.KX175_COMM2_inner_knob_right                               	JF PA28
+34099	MobiFlight.KX175_NAV2_outer_knob_left                                 	JF PA28
+34100	MobiFlight.KX175_NAV2_outer_knob_right                                	JF PA28
+34101	MobiFlight.KX175_NAV2_inner_knob_left                                 	JF PA28
+34102	MobiFlight.KX175_NAV2_inner_knob_right                                	JF PA28
+34103	MobiFlight.KX170_COMM1_outer_knob_left                                	JF PA28
+34104	MobiFlight.KX170_COMM1_outer_knob_right                               	JF PA28
+34105	MobiFlight.KX170_COMM1_inner_knob_left                                	JF PA28
+34106	MobiFlight.KX170_COMM1_inner_knob_right                               	JF PA28
+34107	MobiFlight.KX170_NAV1_outer_knob_left                                 	JF PA28
+34108	MobiFlight.KX170_NAV1_outer_knob_right                                	JF PA28
+34109	MobiFlight.KX170_NAV1_inner_knob_left                                 	JF PA28
+34110	MobiFlight.KX170_NAV1_inner_knob_right                                	JF PA28
+34111	MobiFlight.ALT_baro_knob_left                                         	JF PA28
+34112	MobiFlight.ALT_baro_knob_right                                        	JF PA28
+34113	MobiFlight.CENTRE_LOWER_bat_ON_PRESS                                  	JF PA28
+34114	MobiFlight.CENTRE_LOWER_bat_ON_RELEASE                                	JF PA28
+34115	MobiFlight.AUTOPILOT_alt_ON_PRESS                                     	JF PA28
+34116	MobiFlight.AUTOPILOT_navgps_ON_PRESS                                  	JF PA28
+34117	MobiFlight.AUTOPILOT_hdg_ON_PRESS                                     	JF PA28
+34118	MobiFlight.AUTOPILOT_hdg_OFF_PRESS                                    	JF PA28
+34119	MobiFlight.AUTOPILOT_Nav_Mode_ON_PRESS                                	JF PA28
+34120	MobiFlight.AUTOPILOT_Omni_Mode_ON_PRESS                               	JF PA28
+34121	MobiFlight.AUTOPILOT_HDG_Mode_ON_PRESS                                	JF PA28
+34122	MobiFlight.AUTOPILOT_LOC_NORM_Mode_ON_PRESS                           	JF PA28
+34123	MobiFlight.AUTOPILOT_LOC_REV_Mode_ON_PRESS                            	JF PA28
+34124	MobiFlight.THROTTLE_QUADRANT_mixture_lock_ON_PRESS                    	JF PA28
+34125	MobiFlight.THROTTLE_QUADRANT_mixture_lock_ON_RELEASE                  	JF PA28
+34126	MobiFlight.Emergency_gear_down                                        	JF PA28
+34127	MobiFlight.Emergency_gear_off                                         	JF PA28
+34128	MobiFlight.Emergency_gear_on                                          	JF PA28
+34129	MobiFlight.EGT_knob_left                                              	JF PA28
+34130	MobiFlight.EGT_knob_right                                             	JF PA28
+34131	MobiFlight.G36_BATTERY_1_ON                                           	G36 Beechcraft Bonanza
+34132	MobiFlight.G36_BATTERY_1_OFF                                          	G36 Beechcraft Bonanza
+34133	MobiFlight.G36_BATTERY_2_ON                                           	G36 Beechcraft Bonanza
+34134	MobiFlight.G36_BATTERY_2_OFF                                          	G36 Beechcraft Bonanza
+34135	MobiFlight.G36_ALTERNATOR_1_ON                                        	G36 Beechcraft Bonanza
+34136	MobiFlight.G36_ALTERNATOR_1_OFF                                       	G36 Beechcraft Bonanza
+34137	MobiFlight.G36_ALTERNATOR_2_ON                                        	G36 Beechcraft Bonanza
+34138	MobiFlight.G36_ALTERNATOR_2_OFF                                       	G36 Beechcraft Bonanza
+34139	MobiFlight.G36_LIGHTING_KNOB_FLOOD_DEC                                	G36 Beechcraft Bonanza
+34140	MobiFlight.G36_LIGHTING_KNOB_FLOOD_INC                                	G36 Beechcraft Bonanza
+34141	MobiFlight.G36_LIGHTING_SWITCH_FLOOD                                  	G36 Beechcraft Bonanza
+34142	MobiFlight.G36_AVIONICS_ON                                            	G36 Beechcraft Bonanza
+34143	MobiFlight.G36_AVIONICS_OFF                                           	G36 Beechcraft Bonanza
+34144	MobiFlight.G36_FUEL_PUMP_OFF                                          	G36 Beechcraft Bonanza
+34145	MobiFlight.G36_FUEL_PUMP_ON                                           	G36 Beechcraft Bonanza
+34146	MobiFlight.G36_FUEL_PUMP_HIGH                                         	G36 Beechcraft Bonanza
+34147	MobiFlight.G36_LIGHT_FLOOD_ON                                         	G36 Beechcraft Bonanza
+34148	MobiFlight.G36_LIGHT_FLOOD_OFF                                        	G36 Beechcraft Bonanza
+34149	MobiFlight.G36_LIGHT_PANEL_ON                                         	G36 Beechcraft Bonanza
+34150	MobiFlight.G36_LIGHT_PANEL_OFF                                        	G36 Beechcraft Bonanza
+34151	MobiFlight.G36_LIGHT_KNOB_AVIONICS_DEC                                	G36 Beechcraft Bonanza
+34152	MobiFlight.G36_LIGHT_KNOB_AVIONICS_INC                                	G36 Beechcraft Bonanza
+34153	MobiFlight.G36_LIGHT_KNOB_GLARESHIELD_DEC                             	G36 Beechcraft Bonanza
+34154	MobiFlight.G36_LIGHT_KNOB_GLARESHIELD_INC                             	G36 Beechcraft Bonanza
+34155	MobiFlight.G36_LIGHT_KNOB_PANEL_DEC                                   	G36 Beechcraft Bonanza
+34156	MobiFlight.G36_LIGHT_KNOB_PANEL_INC                                   	G36 Beechcraft Bonanza
+34157	MobiFlight.G36_LIGHT_KNOB_SUBPANEL_DEC                                	G36 Beechcraft Bonanza
+34158	MobiFlight.G36_LIGHT_KNOB_SUBPANEL_INC                                	G36 Beechcraft Bonanza
+34159	MobiFlight.C172_BATTERY_ON                                            	Cessna 172
+34160	MobiFlight.C172_BATTERY_OFF                                           	Cessna 172
+34161	MobiFlight.C172_ALTERNATOR_ON                                         	Cessna 172
+34162	MobiFlight.C172_ALTERNATOR_OFF                                        	Cessna 172

@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 """
 gen_custom_ctrls_info -- Generate custom control info file
-Version 20210621-0-5f0348e
+Version 20210627-0-d776a43
 
 The MIT License (MIT)
 Copyright © 2021 Blake Buhlig
@@ -79,7 +79,7 @@ config.read('FSUIPC7.ini')
 ctrl_base = 32768
 
 with open(desc_fn,"w",newline='\r\n') as desc_ofh:
-   desc_ofh.write(f'{"Ctrl#":<5.5}\t{"Event":<70.70}\tGroup\n') #Header
+   desc_ofh.write(f'{"ID":<5.5}\t{"Control":<70.70}\tGroup\n') #Header
    desc_ofh.write(f'{"=" * 5:<5.5}\t{"=" * 70:<70.70}\t{"=" * 15}\n')
 
    for _i, evt_fn_base in config.items('EventFiles'):

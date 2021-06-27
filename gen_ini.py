@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 """
 gen_ini.py -- FSUIPC7.ini generator for a Honeycomb Alpha/Bravo based FS rig
-Version 20210621-0-225986c
+Version 20210627-0-5c84819
 
 The MIT License (MIT)
 Copyright © 2021 Blake Buhlig
@@ -57,6 +57,7 @@ Eventually I settled on writing a python based framework to get me there.
 import argparse
 from enum import Enum
 import re
+import os
 from fsuipcini.controls import CreateControls
 from fsuipcini.utils import filter_ini, section, end_section
 from fsuipcini.buttons import btnmap, ButtonAction
@@ -92,8 +93,19 @@ SimCtrl = CreateControls("SimCtrl",
 # The name_filt_fn strips the leading "MobiFlight." text and everything
 # after the alphanumberic-and-underscore description prior to conversion
 # into a dynamically created set of control enums prefixed with "MBFCtrl".
+
+# Fallback to custom_ctrls_info.tsv.DEMO.txt if custom_ctrls_info.tsv.txt
+# doesn't exist. This allows this script to work "out-of-the-box" if
+# cloned from git and immediately run without modifications, but as this
+# gen_ini.py file is just a demo of what you can write with the fsuipcini
+# library, running it that way should not be expected to generate a working
+# config for the reasons documented in custom_ctrls_info.tsv.DEMO.txt.
+custom_ctrls_info_filename="custom_ctrls_info.tsv.txt"
+if not os.path.isfile(custom_ctrls_info_filename):
+   custom_ctrls_info_filename="custom_ctrls_info.tsv.DEMO.txt"
+
 MBFCtrl = CreateControls("MBFCtrl",
-                         "custom_ctrls_info.tsv.txt",
+                         custom_ctrls_info_filename,
                          ctrl_id_pfx='C',
                          name_filt_fn=lambda n:
                             re.sub(pattern=r'MobiFlight\.',repl='', count=1,
