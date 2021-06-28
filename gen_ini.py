@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 """
 gen_ini.py -- FSUIPC7.ini generator for a Honeycomb Alpha/Bravo based FS rig
-Version 20210627-0-5c84819
+Version 20210628-0-073677f
 
 The MIT License (MIT)
 Copyright © 2021 Blake Buhlig
@@ -57,8 +57,7 @@ Eventually I settled on writing a python based framework to get me there.
 import argparse
 from enum import Enum
 import re
-import os
-from fsuipcini.controls import CreateControls
+from fsuipcini.controls import CreateControls, CreateFSUIPCControls
 from fsuipcini.utils import filter_ini, section, end_section
 from fsuipcini.buttons import btnmap, ButtonAction
 from fsuipcini.keys import KeyControl, VK, VKM
@@ -82,9 +81,16 @@ args=parser.parse_args()
 # first sorted by control ID then sorted by control name -- but whatever
 # the last encountered mapping is between name and ID will be used, so
 # the fact they are duplicated should not be issue.
+# For demo convenience, try finding that file in a couple possible locations if
+# not in the current directory
 SimCtrl = CreateControls("SimCtrl",
-                         "Controls List for MSFS Build 999.txt",
-                         ctrl_id_pfx='C',calling_module=__name__)
+                         [f'{x}Controls List for MSFS Build 999.txt' for x in \
+                           ["", "c:/FSUIPC7/", "/mnt/c/FSUIPC7"]],
+                         calling_module=__name__)
+
+# See fsuipc_controls.txt for more information about how this enum type is
+# dynamically generated.
+FsuipcCtrl = CreateFSUIPCControls("FsuipcCtrl", calling_module=__name__)
 
 # The script cip_to_evt.py converts a Mobiflight CIP file to a set of
 # custom event files, and the script gen_custom_ctrls_info.py takes both
@@ -100,42 +106,16 @@ SimCtrl = CreateControls("SimCtrl",
 # gen_ini.py file is just a demo of what you can write with the fsuipcini
 # library, running it that way should not be expected to generate a working
 # config for the reasons documented in custom_ctrls_info.tsv.DEMO.txt.
-custom_ctrls_info_filename="custom_ctrls_info.tsv.txt"
-if not os.path.isfile(custom_ctrls_info_filename):
-   custom_ctrls_info_filename="custom_ctrls_info.tsv.DEMO.txt"
 
 MBFCtrl = CreateControls("MBFCtrl",
-                         custom_ctrls_info_filename,
-                         ctrl_id_pfx='C',
+                         ["custom_ctrls_info.tsv.txt",
+                          "custom_ctrls_info.tsv.DEMO.txt"],
                          name_filt_fn=lambda n:
                             re.sub(pattern=r'MobiFlight\.',repl='', count=1,
                                    flags=re.IGNORECASE,
                                    string=re.sub(pattern=r' .*', repl='',
                                                  string=n,count=1)),
                          calling_module=__name__)
-
-
-# I generated fsuipc_controls.txt by copy/pasting pages 26-32 from
-# FSUIPC7 for Advanced Users.pdf into a text file and stripping out the
-# page numbers, and also converted all curly quotes to straight quotes.
-# If this module becomes popular, perhaps it or something
-# like it could be distributed; TODO would want to discuss with John first.
-# Anyway, presently a set of regular expressions are provided to the
-# CreateControls command to ignore lines in the txt file that don't match a
-# control_num<tab>alphanumeric_identifier pattern, excepting embedded spaces
-# which are converted to underscores. Conversion stops upon encountering the
-# first non-alphanumeric/space, into dynamically generated enums prefixed with
-# FsuipcCtrl.
-FsuipcCtrl = CreateControls("FsuipcCtrl",
-                            "fsuipc_controls.txt",
-                            ctrl_id_pfx='C',
-                            name_filt_fn=lambda n:
-                               re.sub(pattern=r'[ /]', repl='_',
-                                      string=re.sub(pattern=r'[\s*][^\w ].*',
-                                                    repl='',string=n,count=1)
-                                     ),
-                            raw_name_regex="[\w\/ ]+\w",
-                            calling_module=__name__)
 
 # Define aliases for controls implemented by keystrokes. An important use for
 # this section is as reference while configuring FS2020 with appropriate key

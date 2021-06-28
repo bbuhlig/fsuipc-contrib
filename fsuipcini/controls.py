@@ -1,6 +1,6 @@
 """
 controls.py -- Controls helper
-Version 20210627-0-c6d3ec9
+Version 20210628-0-4567e73
 
 The MIT License (MIT)
 Copyright © 2021 Blake Buhlig
@@ -45,21 +45,39 @@ class Control:
 
 
 
-def CreateControls(enumtypename,fn,
-                   ctrl_id_pfx='',
+def CreateControls(enumtypename,filelist,
                    name_filt_fn=None,
                    calling_module=None,
-                   raw_name_regex="[\w\.]+"):
+                   raw_name_regex="[\w\.]+",
+                   ctrl_id_pfx='C'):
+
    enum_data=dict()
    full_name_data=dict()
-   with open(fn,'r', encoding="utf8") as ctrls_ifh:
-      for line in ctrls_ifh.read().splitlines():
-         ctrl_match = re.match(f"^(?P<ctrl_num>\d{{4,}})\s+(?P<raw_name>{raw_name_regex})",line)
-         if ctrl_match:
-             raw_name = ctrl_match.group('raw_name')
-             ctrl_name = name_filt_fn(raw_name) if name_filt_fn else raw_name
-             enum_data[ctrl_name] = ctrl_match.group('ctrl_num')
-             full_name_data[ctrl_name] = raw_name
+
+   if not isinstance(filelist,list):
+      filelist = [filelist]
+
+   ctrls_ifh = None
+   while not ctrls_ifh and len(filelist) > 0:
+      filename = filelist.pop(0)
+      try:
+         ctrls_ifh = open(filename,'r', encoding="utf8")
+      except FileNotFoundError:
+         pass
+
+   if not ctrls_ifh:
+      raise FileNotFoundError("Unable to find any file in filelist")
+
+   for line in ctrls_ifh.read().splitlines():
+      ctrl_match = re.match(f"^(?P<ctrl_num>\d{{4,}})\s+(?P<raw_name>{raw_name_regex})",line)
+      if ctrl_match:
+         raw_name = ctrl_match.group('raw_name')
+         ctrl_name = name_filt_fn(raw_name) if name_filt_fn else raw_name
+         enum_data[ctrl_name] = ctrl_match.group('ctrl_num')
+         full_name_data[ctrl_name] = raw_name_regex
+
+   ctrls_ifh.close()
+
    if calling_module:
       enumclass = Enum(value=enumtypename,names=enum_data,type=Control,module=calling_module)
    else:
@@ -67,5 +85,21 @@ def CreateControls(enumtypename,fn,
    enumclass._FullNameData = full_name_data
    enumclass._CtrlIdPrefix = ctrl_id_pfx
    return enumclass
+
+
+
+def CreateFSUIPCControls(enumtypename,filelist="fsuipc_controls.txt",
+                         calling_module=None):
+
+   return CreateControls("FsuipcCtrl",
+                         filelist,
+                         name_filt_fn=lambda n:
+                            re.sub(pattern=r'[ /]', repl='_',
+                                   string=re.sub(pattern=r'[\s*][^\w ].*',
+                                                 repl='',string=n,count=1)
+                                  ),
+                         raw_name_regex="[\w\/ ]+\w",
+                         calling_module=calling_module,
+                         ctrl_id_pfx='C')
 
 
