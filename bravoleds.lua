@@ -251,7 +251,7 @@ end)
 
 GearHandleIsDown = SimVar(0x0BE8,"UD",true,function(self)
   manage_all_gear_leds()
-  MCFCondition(MCF_GearUnlockedOnGround, (SimIsOnGround:isTrue() and GearHandleIsDown:isFalse() and GearIsRetractable:isTrue()))
+  MCFCondition(MCF_GearUnlockedOnGround, (SimIsOnGround:isTrue() and GearHandleIsDown:isFalse() and true))
   upd_master_caution_warning()
 end)
 
@@ -302,7 +302,7 @@ end
 
 function Gear:setLED()
    --ipc.log(self._simvar._offset .. " " .. self._simvar.value .. (self:isDown() and " isDown" or " isNOTDown") .. (self:isUp() and " isUp" or " isNOTUp") .. (GearHandleIsDown:isTrue() and " hdlDown" or " hdlUp") .. (GearIsRetractable:isTrue() and " isRetract" or " isNOTRetract"))
-   if GearIsRetractable:isTrue() then
+   if true then
       if self._is_failed then
 	       set_gear_led(self._led,GEARIND_RED,(not (self:isDown() and GearHandleIsDown:isTrue())))
       else
